@@ -2,9 +2,9 @@
 
 This is the canonical, repository-wide instruction file for coding agents working in this
 project. It is vendor-neutral: it must remain usable by any compatible coding runtime
-(Claude Code, Codex, Cursor, or others). Runtime-specific files (e.g. `CLAUDE.md`), if
-added, act only as thin adapters that point back to this file and to the relevant Skills
-under `agents/`. They must never become the canonical source of project behavior.
+(Claude Code, Codex, Cursor, or others). Runtime-specific files (e.g. `CLAUDE.md`) act only
+as thin adapters that point back to this file and to the relevant Skills under `agents/`.
+They must never become the canonical source of project behavior.
 
 ## What this project is
 
@@ -60,11 +60,22 @@ correct if run sequentially.
   strategy.
 - Do not independently mutate a shared API/schema/contract from multiple workers.
 - Do not parallelize tasks when one depends on the output of another.
-- A shared mutable contract (API schema, shared file, shared dependency) creates a
-  synchronization boundary; work touching it must be serialized or explicitly coordinated.
+- A shared mutable contract (API schema, shared file, shared dependency, database
+  migration sequence, generated file/code) creates a synchronization boundary; work
+  touching it must be serialized or explicitly coordinated.
+- Database migrations are ordered and mutate shared state — do not let independent
+  parallel workers generate or apply migrations concurrently without coordination.
+- Generated files (e.g. generated clients, generated schema code) are derived from a
+  shared source; do not let multiple workers regenerate them independently and merge
+  divergent output.
 - If parallel work produces conflicting assumptions, escalate to the owning Agent, or, in
   the future, to the Team Lead. Do not silently resolve conflicting assumptions.
-- Agents must preserve clear file/module ownership during parallel execution.
+- Agents must preserve clear file and module ownership during parallel execution.
+
+The same invariant applies whether the parallelism is across top-level Agents (e.g.
+Backend and Frontend working concurrently) or internal to one Agent's own
+subagents/workers: **parallelize independent work; serialize or explicitly coordinate
+shared mutable state.**
 
 This task does not implement a parallel execution engine — only the rules that future
 implementations must follow.
@@ -179,18 +190,24 @@ discarding unrelated changes
 
 ```text
 AGENTS.md            canonical, vendor-neutral, repository-wide instructions (this file)
+CLAUDE.md            minimal Claude Code adapter that bootstraps into AGENTS.md; not a
+                      second source of rules
 README.md            project overview
 agents/
   backend/           Backend Agent Skill (see agents/backend/SKILL.md)
     SKILL.md
     policies/
       global/        universal backend engineering policy
+      languages/      future: per-language policy, e.g. languages/typescript/
+      frameworks/     future: per-framework policy, e.g. frameworks/nestjs/
     templates/        reusable backend implementation starting points
     runbooks/         repeatable backend engineering workflows
 ```
 
 Future Agents (Frontend, Architect, QA, DevOps, Security, Release, Team Lead, ...) will
-follow the same `agents/<agent-name>/SKILL.md` convention when they are added.
+follow the same `agents/<agent-name>/SKILL.md` convention when they are added. A future
+runtime-specific adapter (analogous to `CLAUDE.md`) must stay a thin bootstrap into
+`AGENTS.md` and the applicable Skill — never a second, divergent source of rules.
 
 ## Scope of This Repository Today
 

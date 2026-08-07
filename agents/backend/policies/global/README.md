@@ -1,10 +1,11 @@
 # Global Backend Policy
 
 Universal backend engineering expectations that apply regardless of language or framework.
-Language- and framework-specific policies (future `policies/<language>/` and
-`policies/<language>/<framework>/` directories) refine or override this baseline per the
-precedence model in [../../SKILL.md](../../SKILL.md#precedence); they must not contradict
-it without a documented reason tied to that language/framework.
+Language- and framework-specific policies (future `policies/languages/<language>/` and
+`policies/frameworks/<framework>/` directories, siblings of this one) refine or override
+this baseline per the precedence model in
+[../../SKILL.md](../../SKILL.md#precedence); they must not contradict it without a
+documented reason tied to that language/framework.
 
 - Preserve existing architecture unless the task explicitly changes it.
 - Prefer small, scoped changes over broad rewrites.
@@ -22,18 +23,28 @@ it without a documented reason tied to that language/framework.
 
 ## Adding language/framework policies
 
-Future language policies live under `agents/backend/policies/<language>/`, with
-framework-specific refinements nested under `agents/backend/policies/<language>/<framework>/`.
-Examples of expected future directories (not a closed list):
+Future language and framework policies are independent, sibling categories under
+`agents/backend/policies/`:
 
 ```text
-policies/java/
-policies/kotlin/
-policies/typescript/
-policies/python/
-policies/go/
-policies/dotnet/
+policies/
+  global/                 this directory — universal backend policy
+  languages/
+    java/
+    kotlin/
+    typescript/
+    python/
+    go/
+    csharp/
+  frameworks/
+    spring-boot/
+    nestjs/
+    fastapi/
+    aspnet-core/
 ```
 
-Each should document only what is specific to that language/framework — anything already
-covered here does not need to be repeated.
+These lists are examples, not a closed set. Each language or framework policy should
+document only what is specific to it — anything already covered here does not need to be
+repeated. A framework policy is not nested under its language policy, since a language can
+host multiple unrelated frameworks and both categories should be extensible
+independently.
