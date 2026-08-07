@@ -268,6 +268,79 @@ validated branch
 A failed synchronization/rebase/merge must be reported back to the orchestrating Agent
 (or user), never silently treated as success.
 
+#### Pull Request Assignee
+
+When an Agent opens a pull request:
+
+```text
+open PR
+  ↓
+resolve authenticated PR creator
+  ↓
+assign PR creator to PR
+```
+
+- Determine the authenticated/current Git-hosting user creating the PR.
+- When the platform supports PR assignees, assign that same user/account as the
+  assignee.
+- Use the authenticated platform identity when it can be resolved safely — do not guess
+  a username from Git commit metadata, repository ownership, email address, or display
+  name.
+- If the current user cannot be resolved, or the platform does not support assignees,
+  open the PR normally and report that assignment was not applied — this is not a reason
+  to block opening the PR.
+- Do not assign unrelated users automatically.
+
+Being assigned to a PR is metadata, not approval. It does not mean review approval,
+merge approval, or ownership of all implementation concerns raised in review — the
+existing review flow is unchanged:
+
+```text
+validated branch
+  ↓
+sync check
+  ↓
+push
+  ↓
+open PR
+  ↓
+code review
+  ↓
+merge
+```
+
+#### Merge Strategy
+
+Prefer **squash merge** for normal feature/fix/task branches — the default desired
+result is one focused commit on `main` per merged PR:
+
+```text
+task branch
+  ↓
+PR
+  ↓
+review
+  ↓
+squash merge
+  ↓
+single commit on main
+  ↓
+sync main
+  ↓
+delete task branch locally + remotely
+```
+
+Use a different merge strategy only when:
+
+- the user explicitly requests it;
+- repository rules require it;
+- preserving the branch's individual commit history is intentionally important for that
+  specific change.
+
+Do not create unnecessary merge commits for ordinary task branches. When squash merge is
+used, the post-merge cleanup steps below — including the squash-specific branch-deletion
+handling — apply as documented in "Post-Merge Cleanup".
+
 ### Post-Merge Cleanup
 
 After a pull request is successfully merged:
