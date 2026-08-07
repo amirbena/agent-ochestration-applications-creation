@@ -45,7 +45,7 @@ If the fix is a bounded temporary workaround rather than a full fix:
 ## Escalation / Stop Conditions
 
 Urgency does not authorize bypassing mandatory safety/testing — see the shared stop
-conditions in [../README.md](../README.md#stop-conditions). If validation cannot be
+conditions in [../../SKILL.md](../../SKILL.md#stop-conditions). If validation cannot be
 completed and continuing would be unsafe, stop and report rather than shipping unverified.
 
 ## Result Expectations

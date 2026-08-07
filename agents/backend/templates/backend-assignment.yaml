@@ -46,6 +46,7 @@ contracts:
   api:                         # (optional) approved API contract(s) this task implements against
   events:                      # (optional) approved event/message schema(s), if messaging is involved
   persistence:                 # (optional) approved persistence/data contract, if relevant
+  external:                    # (optional) approved third-party/external integration contract(s), if relevant
 
 constraints:
   allowed_scope:                # (optional) what the Backend Agent is explicitly allowed to touch

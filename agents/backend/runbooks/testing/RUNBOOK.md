@@ -67,7 +67,7 @@ broader regression scope when risk warrants it
 ## Escalation / Stop Conditions
 
 If required validation cannot be run and continuing would be unsafe, stop and report —
-see the shared stop conditions in [../README.md](../README.md#stop-conditions).
+see the shared stop conditions in [../../SKILL.md](../../SKILL.md#stop-conditions).
 
 ## Result Expectations
 

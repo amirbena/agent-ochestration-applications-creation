@@ -1,8 +1,9 @@
 # Backend Runbooks
 
 Human-facing overview of the Backend Agent's runbooks. This file explains what runbooks
-are and holds the cross-cutting guidance shared across all of them; it is not itself a
-canonical workflow. Canonical, operational workflow content lives in each `RUNBOOK.md`.
+are, how they relate to standards/templates, and which ones exist — it is not itself
+canonical. Canonical, operational workflow content lives in each `RUNBOOK.md`; canonical
+cross-cutting behavioral rules live in [SKILL.md](../SKILL.md).
 
 ## What a runbook is
 
@@ -62,59 +63,20 @@ override, in order of precedence: the approved task, architecture, contracts,
 repository-local explicit instructions, or applicable code standards — see
 [../SKILL.md](../SKILL.md#precedence).
 
-## Stop Conditions
+## Shared cross-cutting rules
 
-Across all runbooks, the Backend Agent stops and reports (`result.status: blocked` in
-`backend-result.yaml`, per [../templates/backend-result.yaml](../templates/backend-result.yaml))
-when:
+The following are canonical Agent behavior, not runbook-specific content, so they are
+defined once in `SKILL.md` and referenced by anchor from individual runbooks rather than
+restated here or per runbook:
 
-- the assigned architecture and repository materially conflict;
-- a shared contract must change without approval;
-- required architecture information is missing;
-- a destructive database change is ambiguous;
-- required credentials/environment are unavailable;
-- validation cannot be completed and continuing would be unsafe;
-- resolving the issue requires another Agent's ownership.
+- [Stop Conditions](../SKILL.md#stop-conditions) — when the Backend Agent stops and
+  reports a blocker instead of proceeding.
+- [Transactions and Consistency](../SKILL.md#transactions-and-consistency) — what to
+  consider for API+database, messaging+database, external-call+persistence, and other
+  multi-step state transitions.
+- [Observability](../SKILL.md#observability) — the operational-logging/observability
+  checklist applied during validation.
 
-Individual runbooks reference this list rather than restating it, adding only
-category-specific stop conditions where they exist.
-
-## Transactions and Consistency
-
-Relevant runbooks (API + database, messaging + database, external call + persistence,
-multi-step state transitions) should have the Backend Agent consider:
-
-- transaction boundaries;
-- idempotency;
-- optimistic/pessimistic locking, if the architecture uses it;
-- outbox/inbox patterns, if assigned;
-- reconciliation, if required;
-- partial failure;
-- retry duplication.
-
-The Backend Agent uses only what the approved architecture/repository already supports —
-it does not introduce a new consistency pattern unilaterally. If correctness requires an
-architecture-level decision that hasn't been made, escalate (see "Stop Conditions"
-above).
-
-## Observability
-
-Relevant runbooks require validating operational observability as part of the change:
-
-- meaningful structured logs;
-- correlation/trace propagation where the repository supports it;
-- metrics for failure/retry paths where the repository supports them;
-- no secret leakage;
-- no excessive log noise.
-
-This is a workflow checklist, not a restatement of the logging standard — see
-[../policies/global/CODE-STANDARDS.md](../policies/global/CODE-STANDARDS.md#logging) for
-the full logging rules.
-
-## Result Expectations
-
-Every runbook states what it expects reflected in `backend-result.yaml` for its category
-(files changed, tests added/run, validation results, contract changes/proposals,
-architecture concerns, blockers, risks, follow-up) — but there is only ever one canonical
-result format. Runbooks do not define their own result schema; see
-[../templates/backend-result.yaml](../templates/backend-result.yaml).
+Every runbook's `backend-result.yaml` output uses the single canonical result format —
+see [../templates/backend-result.yaml](../templates/backend-result.yaml); runbooks do not
+define their own result schema.

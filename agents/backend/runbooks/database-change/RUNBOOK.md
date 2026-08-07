@@ -35,7 +35,7 @@ data-shape implications, or NoSQL key/document-shape changes.
 12. Add integration tests exercising the real (or realistic ephemeral) persistence
     layer — see [../testing/RUNBOOK.md](../testing/RUNBOOK.md).
 13. Validate transaction behavior where the change touches multi-step writes — see
-    [../../runbooks/README.md](../README.md#transactions-and-consistency).
+    [../../SKILL.md](../../SKILL.md#transactions-and-consistency).
 14. Check performance-sensitive query paths affected by the change (new indexes needed,
     query plan changes).
 15. Report any destructive or data-loss risk explicitly — never let it pass silently.
@@ -72,7 +72,7 @@ data-shape implications, or NoSQL key/document-shape changes.
   [../../SKILL.md](../../SKILL.md#contract-ownership).
 - If a destructive/data-loss change is ambiguous (not clearly and explicitly requested by
   the task), stop and report rather than guessing — see the shared stop conditions in
-  [../README.md](../README.md#stop-conditions).
+  [../../SKILL.md](../../SKILL.md#stop-conditions).
 
 ## Result Expectations
 
@@ -84,5 +84,5 @@ under `validation` in `backend-result.yaml`.
 ## Related Standards / Runbooks
 
 - [../testing/RUNBOOK.md](../testing/RUNBOOK.md)
-- [../README.md](../README.md#transactions-and-consistency)
+- [../../SKILL.md](../../SKILL.md#transactions-and-consistency)
 - The applicable framework `CODE-STANDARDS.md` (persistence/transactions section).

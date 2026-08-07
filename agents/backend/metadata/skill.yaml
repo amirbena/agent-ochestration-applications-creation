@@ -28,6 +28,7 @@ capabilities:
   - api-implementation
   - persistence-integration
   - messaging-integration
+  - external-integration
   - unit-testing
   - integration-testing
   - build-validation

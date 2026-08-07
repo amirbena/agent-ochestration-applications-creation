@@ -12,7 +12,7 @@ API/service.
 
 ## Inputs
 
-The approved integration contract (`backend-assignment.yaml` → `contracts`,
+The approved integration contract (`backend-assignment.yaml` → `contracts.external`,
 `architecture.decisions`), the provider's documented API, and any existing adapter/client
 pattern already in the repository.
 
@@ -44,7 +44,7 @@ pattern already in the repository.
     documentation; validate defensively rather than assuming exact conformance.
 11. Log integration failures with useful context and without secrets (API keys, tokens,
     full request/response bodies containing sensitive data) — see
-    [../README.md](../README.md#observability).
+    [../../SKILL.md](../../SKILL.md#observability).
 12. Add metrics/observability for the integration's failure and latency behavior where
     the repository already supports it.
 13. Use test doubles/fakes for the provider in unit tests — do not call the real
@@ -60,7 +60,7 @@ pattern already in the repository.
 If required resilience behavior (retry policy, circuit breaker, fallback, rate-limit
 handling) is not defined by the approved architecture and the integration genuinely needs
 it for correctness, escalate rather than inventing the architecture — see the shared stop
-conditions in [../README.md](../README.md#stop-conditions).
+conditions in [../../SKILL.md](../../SKILL.md#stop-conditions).
 
 ## Result Expectations
 
@@ -72,6 +72,6 @@ architecture, and note any gap under `architecture.concerns` or `risks` in
 ## Related Standards / Runbooks
 
 - [../testing/RUNBOOK.md](../testing/RUNBOOK.md)
-- [../README.md](../README.md#transactions-and-consistency) — for external call +
+- [../../SKILL.md](../../SKILL.md#transactions-and-consistency) — for external call +
   persistence consistency concerns.
 - [../../policies/global/CODE-STANDARDS.md](../../policies/global/CODE-STANDARDS.md#logging)

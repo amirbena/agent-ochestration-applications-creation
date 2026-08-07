@@ -50,7 +50,7 @@ framework `CODE-STANDARDS.md`.
 Stop and report before implementing an unapproved contract modification — do not
 implement it "as if" it were approved. See
 [../../SKILL.md](../../SKILL.md#contract-ownership) and the shared stop conditions in
-[../README.md](../README.md#stop-conditions).
+[../../SKILL.md](../../SKILL.md#stop-conditions).
 
 ## Result Expectations
 

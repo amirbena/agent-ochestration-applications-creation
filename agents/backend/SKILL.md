@@ -220,6 +220,25 @@ It must escalate rather than decide unilaterally when a change would materially 
 - communication architecture;
 - externally visible behavior outside the approved requirement.
 
+## Stop Conditions
+
+Across every runbook and every assignment, the Backend Agent stops and reports — setting
+`result.status: blocked` in `backend-result.yaml` (see
+[templates/backend-result.yaml](templates/backend-result.yaml)) — when:
+
+- the assigned architecture and repository materially conflict (see "Assignment
+  Validation" above);
+- a shared contract must change without approval (see "Contract Ownership" above);
+- required architecture information is missing;
+- a destructive database change is ambiguous;
+- required credentials/environment are unavailable;
+- validation cannot be completed and continuing would be unsafe (see "Test Execution as
+  Part of the Work Plan" below);
+- resolving the issue requires another Agent's ownership.
+
+This is the canonical stop-condition list. Runbooks reference it rather than restating
+it, adding only category-specific stop conditions where they genuinely differ.
+
 ## Test Execution as Part of the Work Plan
 
 Testing is planned as part of the implementation, not appended afterward. For every
@@ -268,6 +287,38 @@ QA is not a substitute for implementation-level testing. A future QA Agent will 
 own cross-service behavior, full workflow scenarios, and browser/device/system E2E — not
 the Backend Agent's own correctness. The presence of a future QA Agent does not narrow the
 Backend Agent's own testing responsibilities above.
+
+## Transactions and Consistency
+
+For work spanning API + database, messaging + database, external call + persistence, or
+any multi-step state transition, the Backend Agent considers:
+
+- transaction boundaries;
+- idempotency;
+- optimistic/pessimistic locking, if the architecture uses it;
+- outbox/inbox patterns, if assigned;
+- reconciliation, if required;
+- partial failure;
+- retry duplication.
+
+The Backend Agent uses only what the approved architecture/repository already supports —
+it does not introduce a new consistency pattern unilaterally. If correctness requires an
+architecture-level decision that hasn't been made, escalate (see "Stop Conditions"
+above).
+
+## Observability
+
+As part of validating a change (see "Self-Validation" above), the Backend Agent checks:
+
+- meaningful structured logs;
+- correlation/trace propagation where the repository supports it;
+- metrics for failure/retry paths where the repository supports them;
+- no secret leakage;
+- no excessive log noise.
+
+This is a validation checklist, not a restatement of the logging standard — see
+[policies/global/CODE-STANDARDS.md](policies/global/CODE-STANDARDS.md#logging) for the
+full logging rules.
 
 ## Multi-Language Architecture
 
@@ -470,7 +521,7 @@ agents/backend/
     backend-result.yaml     canonical Backend-Agent-to-Team-Lead result contract
                             (implementation/scaffolding templates: none yet)
   runbooks/
-    README.md               human-facing overview + shared cross-cutting guidance
+    README.md               human-facing overview of runbooks; not canonical
     testing/RUNBOOK.md
     openapi/RUNBOOK.md
     debugging/RUNBOOK.md
@@ -501,6 +552,6 @@ See:
 - [templates/README.md](templates/README.md) — including the
   [backend-assignment.yaml](templates/backend-assignment.yaml) and
   [backend-result.yaml](templates/backend-result.yaml) execution-contract templates
-- [runbooks/README.md](runbooks/README.md) — what runbooks are, available runbooks, and
-  shared cross-cutting guidance (stop conditions, transactions/consistency,
-  observability)
+- [runbooks/README.md](runbooks/README.md) — what runbooks are and the available list
+  (canonical "Stop Conditions", "Transactions and Consistency", and "Observability" rules
+  live above, in this file, not there)

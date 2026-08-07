@@ -49,14 +49,14 @@ repository's existing producer/consumer conventions.
     partition/queue indefinitely, if that matters for this broker/task).
 16. Validate observability where the repository supports it — consumer lag, error
     counts, structured logs on failure — see
-    [../README.md](../README.md#observability).
+    [../../SKILL.md](../../SKILL.md#observability).
 
 ## Escalation / Stop Conditions
 
 If an event-contract change affects other services/Agents (any consumer or producer this
 Backend Agent doesn't own), escalate unless the change was already approved — do not
 change a shared schema silently. See the shared stop conditions in
-[../README.md](../README.md#stop-conditions).
+[../../SKILL.md](../../SKILL.md#stop-conditions).
 
 ## Result Expectations
 
@@ -67,6 +67,6 @@ idempotency risk under `risks` if not fully addressed by this change.
 ## Related Standards / Runbooks
 
 - [../testing/RUNBOOK.md](../testing/RUNBOOK.md)
-- [../README.md](../README.md#transactions-and-consistency) — for messaging + database
+- [../../SKILL.md](../../SKILL.md#transactions-and-consistency) — for messaging + database
   consistency concerns (e.g. outbox pattern).
 - [../../SKILL.md](../../SKILL.md#contract-ownership)

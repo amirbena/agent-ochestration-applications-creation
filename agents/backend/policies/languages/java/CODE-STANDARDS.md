@@ -79,8 +79,9 @@ layout rather than introducing a second one.
 - Use parameterized tests for boundary/validation cases with multiple inputs, following
   the repository's existing convention (e.g. JUnit 5 `@ParameterizedTest`).
 - Add integration tests when the change touches persistence, HTTP boundaries, or
-  framework wiring — see the applicable framework standard for the mechanism (e.g.
-  Testcontainers, `@SpringBootTest`).
+  framework wiring — using Testcontainers or an equivalent already used in the
+  repository where a real dependency is needed; see the applicable framework standard
+  for the framework-specific test mechanism.
 - Run the repository's existing test command for the affected module before reporting
   the implementation complete; if it cannot be run, report why, what was validated
   instead, and the remaining risk.

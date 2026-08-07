@@ -53,7 +53,7 @@ validate
 If the root cause is architectural, or outside Backend Agent ownership (e.g. requires an
 Architect decision, or lives in another Agent's domain), return a blocker/concern rather
 than forcing a local workaround — see the shared stop conditions in
-[../README.md](../README.md#stop-conditions).
+[../../SKILL.md](../../SKILL.md#stop-conditions).
 
 ## Result Expectations
 

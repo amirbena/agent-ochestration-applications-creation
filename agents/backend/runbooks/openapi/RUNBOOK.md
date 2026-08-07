@@ -44,7 +44,7 @@ existing OpenAPI source of truth (if any), and the applicable framework
 Treat any change to a shared contract (request/response shape, endpoint, error format)
 that was not already pre-approved as an escalation, not a documentation update — see
 [../../SKILL.md](../../SKILL.md#contract-ownership) and the shared stop conditions in
-[../README.md](../README.md#stop-conditions).
+[../../SKILL.md](../../SKILL.md#stop-conditions).
 
 ## Result Expectations
 
