@@ -57,6 +57,51 @@ Testing is a first-class part of implementation, not optional follow-up work —
 
 Language/framework standards specify the idiomatic logging mechanism for that ecosystem.
 
+## Comments
+
+This applies to all supported languages/frameworks unless an explicit repository-local
+convention requires otherwise.
+
+- Prefer self-explanatory code over comments — clear naming and structure first.
+- Do not comment obvious syntax or restate what the code already says.
+- Add a comment only when it provides useful context that cannot be expressed clearly
+  through naming or structure. A comment should primarily explain:
+  - why a non-obvious decision exists;
+  - an important constraint;
+  - an external-system limitation;
+  - a compatibility/workaround reason;
+  - a subtle concurrency, transaction, or lifecycle concern.
+- Keep normal implementation comments short — as a default, a contextual comment should
+  not exceed approximately 3 lines. If explaining ordinary implementation code needs
+  more than that, first consider whether the code should be simplified, naming improved,
+  logic extracted, or the explanation belongs in an ADR, runbook, API documentation, or
+  another higher-level document instead. Avoid comment blocks that become mini design
+  documents inside source files.
+- Remove stale comments when behavior changes.
+- Do not leave commented-out code.
+- Do not use a comment to explain around unclear or overly complex implementation —
+  simplify the implementation instead.
+
+Undesirable:
+
+```java
+// Increment the counter
+counter++;
+```
+
+Useful — communicates context the code itself cannot:
+
+```java
+// Provider retries duplicate requests after network timeouts.
+// Preserve the idempotency key so repeated attempts resolve to the same operation.
+```
+
+**Documentation exception**: the ~3-line guidance applies to ordinary inline/block
+implementation comments. It does not prohibit longer documentation where the ecosystem
+genuinely requires it — public API documentation, Javadoc/KDoc/docstrings, generated
+OpenAPI descriptions, or complex protocol documentation. Even there, keep documentation
+focused and avoid unnecessary verbosity.
+
 ## Adding language/framework standards
 
 Language and framework standards are independent, sibling categories under
