@@ -93,6 +93,40 @@ implementations must follow.
 
 ## Git Methodology
 
+The full lifecycle for an implementation task:
+
+```text
+receive implementation task
+    ↓
+verify clean/safe base
+    ↓
+create dedicated task branch
+    ↓
+implement
+    ↓
+validate
+    ↓
+sync with target HEAD
+    ↓
+push
+    ↓
+open PR / code review
+    ↓
+merge
+    ↓
+switch to main
+    ↓
+sync main
+    ↓
+delete task branch locally + remotely
+    ↓
+clean final state
+```
+
+This section defines each stage. A future Release Agent will automate the
+publish/merge/cleanup stages; until then, the acting Agent (or user) follows this
+lifecycle manually.
+
 ### Before Starting Work
 
 - Inspect `git status`.
@@ -102,6 +136,42 @@ implementations must follow.
 - Verify work starts from the expected/latest base.
 - Never silently overwrite or discard unrelated local changes — if the working tree
   contains unrelated changes, stop and report them instead of proceeding.
+
+### Every Implementation Task Starts on a Dedicated Branch
+
+Every implementation task must begin on a dedicated branch created from the latest safe
+target branch — not directly on `main` (or another protected/default branch), unless the
+user explicitly requests an exceptional workflow. This applies to any implementation
+task: new features, Agent/Skill implementation, bug fixes, refactoring, test work,
+infrastructure changes, and documentation changes that are part of an implementation
+task.
+
+Start-of-task flow:
+
+```text
+new implementation task
+    ↓
+inspect status / branch / HEAD
+    ↓
+fetch remote
+    ↓
+synchronize target branch safely
+    ↓
+create dedicated task branch
+    ↓
+perform work
+```
+
+Before creating the branch, verify: working tree state, current branch, current HEAD,
+the intended base branch, the remote/default branch, remote synchronization, and the
+absence of unrelated local changes (per "Before Starting Work" above). Never silently
+discard work in order to create a branch — if the base isn't safe, stop and report
+instead.
+
+**One implementation scope ≈ one dedicated task branch.** Do not accumulate unrelated
+tasks on the same branch; if a new request is materially separate from the current task
+and the previous work is already completed/merged, start a new branch. Do not create
+unnecessary branches for small edits inside the same active task.
 
 ### Branching
 
@@ -114,20 +184,33 @@ feature/<clear-feature-name>
 Other allowed prefixes:
 
 ```text
-fix/
-refactor/
-docs/
-chore/
-test/
+fix/<clear-fix-name>
+refactor/<clear-refactor-name>
+docs/<clear-docs-name>
+test/<clear-test-name>
+chore/<clear-chore-name>
 ```
 
-Prefer a clear, semantic branch name over an issue-number-only or vague name. Examples:
+Rules:
+
+- Prefer `feature/` for most new implementation work.
+- Use a short but descriptive kebab-case name that describes the work, not only an issue
+  number.
+- Avoid vague names such as `feature/update`, `fix/stuff`, `changes`, `work`.
+- Do not reuse an old merged branch for unrelated work — see "One implementation scope"
+  above.
+- For a task spanning both code and documentation, prefer the prefix matching the
+  primary purpose.
+
+Examples:
 
 ```text
 feature/backend-agent
+feature/code-review-agent
 feature/team-lead-orchestration
 fix/openapi-validation
-refactor/agent-runtime-boundary
+refactor/policy-loading
+docs/git-workflow-post-merge-cleanup
 ```
 
 Never work directly on `main`, `master`, or another protected/default branch.
@@ -185,6 +268,118 @@ validated branch
 A failed synchronization/rebase/merge must be reported back to the orchestrating Agent
 (or user), never silently treated as success.
 
+### Post-Merge Cleanup
+
+After a pull request is successfully merged:
+
+```text
+merged PR
+  ↓
+confirm merge
+  ↓
+switch to main
+  ↓
+fetch/prune
+  ↓
+synchronize local main with origin/main
+  ↓
+verify merged content exists
+  ↓
+delete local task branch
+  ↓
+delete remote task branch
+  ↓
+verify clean final state
+```
+
+Concretely, the acting Agent must:
+
+- Confirm the PR is actually in the `MERGED` state — do not assume it merged.
+- Capture or verify the resulting merge/squash commit.
+- Ensure it is safe to leave the feature branch (nothing below is skipped first).
+- Switch to `main`.
+- Fetch/prune remote state.
+- Synchronize local `main` with `origin/main`, preferring fast-forward — see "Main
+  Synchronization" below.
+- Verify the merged work is actually present on `main`.
+- Verify no work exists only on the feature branch (nothing would be lost by removing
+  it).
+- Delete the local task branch.
+- Verify/delete the remote source branch (some hosting platforms auto-delete it on
+  merge — verify it is actually gone rather than assuming).
+- Prune stale remote-tracking references.
+- Finish on `main`, with a clean working tree.
+
+Never delete another Agent's active branch, an unrelated feature branch, or a branch
+whose merge state is uncertain.
+
+#### Main Synchronization
+
+```text
+fetch
+    ↓
+inspect local main vs origin/main
+    ↓
+fast-forward when possible
+```
+
+Do not create an unnecessary merge commit merely to update local `main`. If local `main`
+contains unexpected local-only commits, stop and report — do not reset/discard them.
+Expected successful state: `local main HEAD == origin/main HEAD`.
+
+#### Squash-Merge Local Branch Deletion
+
+A squash merge creates a new commit on `main` rather than preserving the feature
+branch's commit ancestry. As a result, `git branch -d <branch>` may refuse to delete the
+branch even though the PR was safely squash-merged — that refusal alone does not mean
+the work is unmerged.
+
+Before using forced local deletion, verify all of:
+
+1. the PR is confirmed `MERGED`;
+2. the resulting squash commit exists on `main`;
+3. all intended feature content is present on `main`;
+4. the task branch contains no extra work beyond what was merged;
+5. the working tree is safe.
+
+```text
+safe squash merge verified
+    ↓
+git branch -d fails due to ancestry
+    ↓
+content + commit verification
+    ↓
+local branch force-delete allowed
+```
+
+Only after those checks may `git branch -D <merged-task-branch>` be used. This is a
+narrowly scoped exception to the destructive-operations rule below (see "Safety") — it
+does not generalize to permission for other destructive Git behavior, and branch
+deletion must never be used to hide unmerged work.
+
+#### Post-Merge Failure Behavior
+
+If any cleanup step reveals: local-only commits on `main`; additional commits on the
+feature/task branch beyond what was merged; uncommitted work; failed synchronization;
+unexpected remote divergence; an uncertain PR merge state; missing merged content; or
+branch contents that differ unexpectedly from merged `main` — stop and report instead of
+deleting anything. Never make branch cleanup more important than preserving potentially
+unmerged work.
+
+#### Final State Contract
+
+The canonical completion state for a successfully merged implementation task:
+
+```text
+PR = merged
+current branch = main
+local main = origin/main
+task branch = absent locally
+task branch = absent remotely
+remote tracking reference = absent
+working tree = clean
+```
+
 ### Safety
 
 Destructive Git operations must never be used merely to make the repository appear clean.
@@ -196,6 +391,10 @@ git clean -fd
 force push
 discarding unrelated changes
 ```
+
+The one narrowly scoped exception is forced local deletion of an already-verified,
+squash-merged task branch — see "Squash-Merge Local Branch Deletion" above. It does not
+extend to any other destructive operation.
 
 ## Repository Layout
 
