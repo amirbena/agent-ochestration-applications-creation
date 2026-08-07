@@ -262,23 +262,18 @@ now, the principle is:
 validated branch
     -> synchronization check
     -> push
-    -> open code review / pull request
+    -> open pull request
+    -> assign PR creator (when supported)
+    -> code review
+    -> merge
 ```
 
 A failed synchronization/rebase/merge must be reported back to the orchestrating Agent
-(or user), never silently treated as success.
+(or user), never silently treated as success. This is the one canonical PR flow for this
+section — "Pull Request Assignee" and "Merge Strategy" below add detail to specific
+steps in it rather than restating the whole sequence.
 
 #### Pull Request Assignee
-
-When an Agent opens a pull request:
-
-```text
-open PR
-  ↓
-resolve authenticated PR creator
-  ↓
-assign PR creator to PR
-```
 
 - Determine the authenticated/current Git-hosting user creating the PR.
 - When the platform supports PR assignees, assign that same user/account as the
@@ -292,43 +287,15 @@ assign PR creator to PR
 - Do not assign unrelated users automatically.
 
 Being assigned to a PR is metadata, not approval. It does not mean review approval,
-merge approval, or ownership of all implementation concerns raised in review — the
-existing review flow is unchanged:
-
-```text
-validated branch
-  ↓
-sync check
-  ↓
-push
-  ↓
-open PR
-  ↓
-code review
-  ↓
-merge
-```
+merge approval, or ownership of all implementation concerns raised in review — the flow
+above (code review, then merge) is unchanged by who is assigned.
 
 #### Merge Strategy
 
 Prefer **squash merge** for normal feature/fix/task branches — the default desired
-result is one focused commit on `main` per merged PR:
-
-```text
-task branch
-  ↓
-PR
-  ↓
-review
-  ↓
-squash merge
-  ↓
-single commit on main
-  ↓
-sync main
-  ↓
-delete task branch locally + remotely
-```
+result is one focused commit on `main` per merged PR. At the merge step in the flow
+above: squash merge, producing a single commit on `main`, followed by the sync and
+branch-cleanup steps in "Post-Merge Cleanup" below.
 
 Use a different merge strategy only when:
 
