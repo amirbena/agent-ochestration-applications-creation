@@ -1,0 +1,73 @@
+# Canonical Backend Result contract — what the Backend Agent returns to the Team Lead
+# for one backend-assignment.yaml (see that file for the corresponding input contract).
+# This is a structural template/contract, not runtime code: no parser, validator, or
+# schema engine is implied by this file.
+#
+# One result per assignment: if the Backend Agent used internal subagents/workers
+# (see ../SKILL.md "Parallel Internal Work"), it aggregates their output into exactly
+# one canonical result here — internal workers never report separately to the Team Lead.
+#
+# Status values (result.status):
+#   completed               - implementation and required validation completed successfully.
+#   completed_with_warnings - implementation completed; non-blocking risks/limitations remain.
+#   blocked                 - Backend Agent cannot safely continue without an external
+#                              decision/input (e.g. an assignment mismatch or missing
+#                              required field) — see "blockers" below.
+#   failed                  - execution was attempted but did not complete successfully.
+#
+# Validation status values (each validation.* .status):
+#   passed | failed | not_run | not_applicable
+# If status is "not_run", a "reason" must be present — the Backend Agent never silently
+# omits expected validation.
+
+result:
+  status:                      # (required) one of: completed | completed_with_warnings | blocked | failed
+  summary:                     # (required) short human-readable summary of the outcome
+
+implementation:
+  files_changed: []            # (optional) paths modified
+  files_created: []            # (optional) paths added
+  files_deleted: []            # (optional) paths removed
+
+validation:
+  unit_tests:
+    status:                    # passed | failed | not_run | not_applicable
+    command:                   # (optional) the command that was run, if any
+    summary:                   # (optional) brief outcome detail
+    reason:                    # (required if status is not_run) why it could not be run
+  integration_tests:
+    status:
+    command:
+    summary:
+    reason:                    # (required if status is not_run)
+  build:
+    status:
+    command:
+    reason:                    # (required if status is not_run)
+  lint:
+    status:
+    command:
+    reason:                    # (required if status is not_run)
+  static_analysis:
+    status:
+    command:
+    reason:                    # (required if status is not_run)
+
+contracts:
+  changed: false                # (required) whether any shared contract was changed
+  proposed_changes: []          # (optional) proposed contract changes surfaced for escalation,
+                                 # not applied unilaterally — see SKILL.md "Contract Ownership"
+
+architecture:
+  concerns: []                  # (optional) architecture-level concerns surfaced for escalation,
+                                 # not decided unilaterally — see SKILL.md "Architecture vs
+                                 # Implementation Decisions"
+
+blockers: []                    # (optional) assignment mismatches or missing inputs that stopped
+                                 # safe implementation — see SKILL.md "Assignment Validation";
+                                 # required to be non-empty when result.status is "blocked"
+
+risks: []                       # (optional) known non-blocking risk, populated when result.status
+                                 # is "completed_with_warnings"
+
+follow_up: []                   # (optional) suggested follow-up work out of scope for this assignment

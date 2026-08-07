@@ -47,6 +47,52 @@ These are **authoritative inputs**. The Backend Agent does not independently dec
 stack, architecture, or boundaries — it implements within the values it was given. If a
 value it needs was not supplied or is ambiguous, it reports that rather than guessing.
 
+## Execution Contract
+
+The Team Lead ↔ Backend Agent interface is two canonical, structural templates under
+[templates/](templates/) — not free-form input/output:
+
+```text
+Team Lead
+   ↓
+backend-assignment  (templates/backend-assignment.yaml)
+   ↓
+Backend Agent
+   ├── optional internal workers
+   ↓
+backend-result      (templates/backend-result.yaml)
+   ↓
+Team Lead
+```
+
+- The Backend Agent receives an assignment matching
+  [templates/backend-assignment.yaml](templates/backend-assignment.yaml) — the fields
+  summarized in "Input Authority" above are that template's contents.
+- The Backend Agent returns a result matching
+  [templates/backend-result.yaml](templates/backend-result.yaml), including its status
+  (`completed`, `completed_with_warnings`, `blocked`, or `failed`), per-validation-type
+  outcomes (`passed`, `failed`, `not_run` with a reason, or `not_applicable`), whether any
+  shared contract changed, any architecture concerns, and any blockers.
+- These templates are canonical contracts, not runtime code — no parser, validator, or
+  schema engine is implied or required by this Skill.
+- See [metadata/skill.yaml](metadata/skill.yaml) for the machine-readable declaration of
+  this same contract shape (capabilities, required/optional assignment fields, status
+  values).
+
+### Parallel Internal Work
+
+Internal subagents/workers do not change this external contract. When the Backend Agent
+uses them (including in parallel — see [AGENTS.md](../../AGENTS.md#parallel-execution-rules)):
+
+- they inherit the same assignment the Backend Agent received — none of them get an
+  independent Team Lead relationship;
+- the Backend Agent owns decomposition of the work across them;
+- the Backend Agent owns avoiding conflicts between them (file/module ownership, shared
+  mutable state — see "Boundaries" above and the linked parallel-execution rules);
+- the Backend Agent aggregates their output itself;
+- the Backend Agent reports exactly **one** canonical `backend-result` upward — internal
+  workers never report separately to the Team Lead.
+
 ## Technology Stack Ownership
 
 - **Architect Agent owns** (not implemented in this repository yet; documented here only
@@ -366,7 +412,10 @@ resolution.
 
 ```text
 agents/backend/
-  SKILL.md               this file — canonical Backend Agent definition
+  README.md               human-facing overview — not a source of canonical behavior
+  SKILL.md                this file — canonical Backend Agent definition
+  metadata/
+    skill.yaml             declarative, machine-readable Skill identity/capabilities/contract shape
   policies/
     global/
       CODE-STANDARDS.md   universal backend engineering standard, applies to every language
@@ -388,7 +437,10 @@ agents/backend/
       axum/CODE-STANDARDS.md
       actix-web/CODE-STANDARDS.md
                           (not a closed list)
-  templates/               reusable implementation/reference starting points, never mandatory
+  templates/
+    backend-assignment.yaml canonical Team-Lead-to-Backend-Agent assignment contract
+    backend-result.yaml     canonical Backend-Agent-to-Team-Lead result contract
+                            (implementation/scaffolding templates: none yet)
   runbooks/                 repeatable engineering workflows, reused across languages where possible
 ```
 
@@ -399,10 +451,14 @@ carries no normative authority of its own.
 
 See:
 
+- [README.md](README.md) — human-facing overview
+- [metadata/skill.yaml](metadata/skill.yaml) — declarative Skill metadata
 - [policies/global/CODE-STANDARDS.md](policies/global/CODE-STANDARDS.md)
 - [policies/languages/CODE-STANDARDS.md](policies/languages/CODE-STANDARDS.md) — the
   language-standard contract
 - [policies/frameworks/CODE-STANDARDS.md](policies/frameworks/CODE-STANDARDS.md) — the
   framework-standard contract
-- [templates/README.md](templates/README.md)
+- [templates/README.md](templates/README.md) — including the
+  [backend-assignment.yaml](templates/backend-assignment.yaml) and
+  [backend-result.yaml](templates/backend-result.yaml) execution-contract templates
 - [runbooks/README.md](runbooks/README.md)
