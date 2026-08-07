@@ -48,6 +48,17 @@ not implemented yet.
   another compatible coding agent). Core Agent behavior, as defined in a Skill, must never
   depend on a single runtime.
 
+## Architecture Ownership
+
+Architecture decisions (technology stack, service decomposition, high-level contracts,
+and similar) belong to the appropriate architecture authority (e.g. a future Architect
+Agent), not to the Agent implementing the work. Implementation Agents execute within the
+boundaries and decisions they are assigned; they do not independently choose or infer
+them. Any change that is cross-Agent or architectural in nature must be escalated to the
+owning Agent, or, in the future, the Team Lead — never resolved unilaterally by the
+implementing Agent. See the applicable Agent's `SKILL.md` for how this applies concretely
+to that Agent's role.
+
 ## Parallel Execution Rules
 
 Parallel execution is a first-class capability of this system: multiple Agents and/or
