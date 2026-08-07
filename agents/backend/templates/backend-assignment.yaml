@@ -1,0 +1,65 @@
+# Canonical Backend Assignment contract — the input a Team Lead hands to the Backend
+# Agent. This is a structural template/contract, not runtime code: no parser, validator,
+# or schema engine is implied by this file. See ../SKILL.md ("Input Authority",
+# "Assignment Validation") for the behavioral rules that govern how the Backend Agent
+# treats these fields.
+#
+# Authority: the Backend Agent treats this assignment as authoritative. It may validate
+# that the assignment is internally consistent and consistent with what it observes in
+# the repository (see SKILL.md "Assignment Validation"), but it may NOT redefine:
+#   - language
+#   - framework
+#   - architecture
+#   - shared contracts
+#   - service boundaries
+# If the assignment is missing a required field, is ambiguous, or conflicts with
+# observed repository reality, the Backend Agent does not guess or reinterpret — it
+# returns a blocker (see backend-result.yaml) for the Team Lead to resolve:
+#
+#   Backend Agent -> returns blocker -> Team Lead
+#
+# Fields marked (required) must be present. Fields marked (optional) may be omitted when
+# not applicable to the task; omission is not itself a blocker unless the Backend Agent
+# needs that field to proceed safely, in which case it reports the gap as a blocker
+# rather than assuming a value.
+
+assignment:
+  id:                          # (required) stable identifier for this assignment/task
+  objective:                   # (required) short statement of what backend change is being requested
+
+repository:
+  repository:                  # (required) repository identifier/URL
+  path:                        # (optional) path within the repository, if not the root
+  module:                      # (optional) application/service/module boundary within the path
+
+technology:
+  language:                    # (required) assigned language, e.g. "kotlin" — Backend Agent does not choose this
+  framework:                   # (optional) assigned framework, e.g. "spring-boot" — some assignments are language-only
+  version_constraints:         # (optional) language/framework/runtime version constraints to respect
+
+architecture:
+  decisions:                   # (optional) approved architecture decisions relevant to this task
+  boundaries:                  # (optional) service/module boundaries the implementation must respect
+  non_functional_requirements: # (optional) e.g. latency, throughput, availability targets
+
+contracts:
+  api:                         # (optional) approved API contract(s) this task implements against
+  events:                      # (optional) approved event/message schema(s), if messaging is involved
+  persistence:                 # (optional) approved persistence/data contract, if relevant
+  external:                    # (optional) approved third-party/external integration contract(s), if relevant
+
+constraints:
+  allowed_scope:                # (optional) what the Backend Agent is explicitly allowed to touch
+  forbidden_scope:               # (optional) what the Backend Agent must not touch
+
+validation:
+  required:
+    unit_tests:                 # (optional, default expected) whether unit tests are required
+    integration_tests:          # (optional) whether integration tests are required for this change
+    build:                      # (optional, default expected) whether a build/compile check is required
+    lint:                       # (optional) whether lint validation is required
+    static_analysis:            # (optional) whether static analysis is required
+
+context:
+  references:                  # (optional) links/pointers to ADRs, tickets, prior discussion
+  notes:                       # (optional) free-form context that doesn't fit another field

@@ -1,0 +1,91 @@
+# Declarative metadata for the Backend Agent Skill.
+#
+# This file declares WHAT the Skill is: identity, capabilities, and the shape of its
+# assignment/result contract. It does not define HOW the Agent behaves — behavioral
+# rules, boundaries, escalation, policy loading, and the testing workflow are defined in
+# ../SKILL.md and remain there; do not treat this file as a second source of behavior.
+#
+# This file is runtime-neutral: no Claude/Anthropic-specific fields, model names, or
+# other vendor/runtime-specific configuration belong here. Runtime-specific adapters may
+# map this metadata to their own format later.
+
+schema_version: "1.0"
+
+id: backend
+name: Backend Agent
+kind: implementation-agent
+
+description: >
+  Implements backend tasks within the language, framework, architecture, and contract
+  decisions assigned by the Team Lead (per Architect Agent decisions). Does not choose
+  the technology stack or own architecture decisions.
+
+reports_to: team-lead
+upstream_authority: architect-agent
+
+capabilities:
+  - backend-implementation
+  - api-implementation
+  - persistence-integration
+  - messaging-integration
+  - external-integration
+  - unit-testing
+  - integration-testing
+  - build-validation
+  - lint-static-analysis
+  - openapi-documentation
+  - implementation-level-debugging
+
+# The fields a Team Lead assignment may/must carry. See
+# ../templates/backend-assignment.yaml for the full structured template.
+assignment:
+  required:
+    - task
+    - language
+    - repository
+  optional:
+    - framework
+    - module_boundary
+    - architecture_decisions
+    - contracts
+    - non_functional_requirements
+    - constraints
+    - validation_expectations
+
+# The fields the Backend Agent returns. See ../templates/backend-result.yaml for the
+# full structured template.
+result:
+  status_values:
+    - completed
+    - completed_with_warnings
+    - blocked
+    - failed
+  validation_status_values:
+    - passed
+    - failed
+    - not_run
+    - not_applicable
+
+# Currently defined policy dimensions (agents/backend/policies/). Not a closed set.
+supported_policies:
+  languages:
+    - java
+    - kotlin
+    - typescript
+    - python
+    - go
+    - rust
+  frameworks:
+    - spring-boot
+    - nestjs
+    - fastapi
+    - gin
+    - axum
+    - actix-web
+
+execution:
+  internal_subagents: true
+  parallel_internal_work: true
+  # Internal subagents/workers are an implementation detail of this Agent; they do not
+  # appear as separate top-level parties in the Team Lead <-> Backend Agent contract.
+  external_contract_unaffected_by_internal_execution: true
