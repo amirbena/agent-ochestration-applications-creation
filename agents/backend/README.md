@@ -65,8 +65,9 @@ precedence rules.
   per-framework `CODE-STANDARDS.md` files.
 - **`templates/`** — canonical structured artifacts, including the Team Lead ↔ Backend
   Agent execution-contract templates (`backend-assignment.yaml`, `backend-result.yaml`).
-- **`runbooks/`** — repeatable engineering workflows (testing, OpenAPI, debugging,
-  database changes).
+- **`runbooks/`** — repeatable engineering workflows, one `RUNBOOK.md` per class of work
+  (testing, OpenAPI, debugging, database change, API change, messaging change, external
+  integration, production fix). A task may draw on more than one.
 
 ## Currently supported policy set
 

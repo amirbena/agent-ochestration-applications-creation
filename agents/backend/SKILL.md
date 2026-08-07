@@ -128,7 +128,8 @@ uses them (including in parallel — see [AGENTS.md](../../AGENTS.md#parallel-ex
 - Work with persistence/database layers where required.
 - Integrate with asynchronous/messaging systems (queues, event streams, pub/sub) where
   the task requires it, following the repository's existing messaging conventions.
-- Debug implementation-level failures (see [runbooks/debugging.md](runbooks/debugging.md)).
+- Debug implementation-level failures (see
+  [runbooks/debugging/RUNBOOK.md](runbooks/debugging/RUNBOOK.md)).
 - Report implementation results and blockers.
 - Identify when a requested implementation requires a change to architecture or a shared
   contract, and surface that rather than deciding it unilaterally (see "Contract
@@ -172,7 +173,7 @@ The Backend Agent distinguishes between two different activities:
   Agent, or, in the future, the Team Lead/Architect flow, rather than redefining the
   contract unilaterally. If the repository is contract-first (e.g. an OpenAPI spec drives
   implementation), that authority must be respected — see
-  [runbooks/openapi.md](runbooks/openapi.md).
+  [runbooks/openapi/RUNBOOK.md](runbooks/openapi/RUNBOOK.md).
 
 ## Assignment Validation
 
@@ -242,7 +243,7 @@ backend change, the Backend Agent's implementation plan includes:
 
 The specific commands/tooling (steps 4, 9–11) come from the repository itself — they are
 not hard-coded here, since they differ per repository; see the applicable language and
-framework standards, and [runbooks/testing.md](runbooks/testing.md).
+framework standards, and [runbooks/testing/RUNBOOK.md](runbooks/testing/RUNBOOK.md).
 
 The Backend Agent must not report an implementation as complete without having run the
 appropriate unit and (where relevant) integration tests, unless execution is genuinely
@@ -353,6 +354,33 @@ These are distinct and must not be blurred together:
   may use, adapt, or ignore — they carry no architectural authority of their own; a
   template must still comply with applicable policies.
 
+## Runbook Selection
+
+Once code standards are loaded (per "Policy Loading" above), the Backend Agent selects
+the runbook(s) applicable to the assigned task:
+
+```text
+assigned backend task
+    ↓
+load mandatory code standards
+    ↓
+select applicable runbook(s)
+    ↓
+plan implementation + validation
+```
+
+A task may require more than one runbook — the Backend Agent composes the relevant ones
+rather than forcing the task into a single category. For example, "add an endpoint that
+stores data and publishes an event" draws on API-change, database-change,
+messaging-change, and testing. This is a documentation-level selection judgment, not an
+automated runbook-selection engine — see
+[runbooks/README.md](runbooks/README.md#available-runbooks) for the current set.
+
+Runbooks define execution sequence only. They never override the approved task,
+architecture, contracts, repository-local explicit instructions, or applicable code
+standards — see "Precedence" above, which governs runbooks the same way it governs
+policies.
+
 ## Boilerplate Reduction and Native Feature Usage
 
 The Backend Agent prefers idiomatic language/framework features that reduce boilerplate
@@ -441,13 +469,25 @@ agents/backend/
     backend-assignment.yaml canonical Team-Lead-to-Backend-Agent assignment contract
     backend-result.yaml     canonical Backend-Agent-to-Team-Lead result contract
                             (implementation/scaffolding templates: none yet)
-  runbooks/                 repeatable engineering workflows, reused across languages where possible
+  runbooks/
+    README.md               human-facing overview + shared cross-cutting guidance
+    testing/RUNBOOK.md
+    openapi/RUNBOOK.md
+    debugging/RUNBOOK.md
+    database-change/RUNBOOK.md
+    api-change/RUNBOOK.md
+    messaging-change/RUNBOOK.md
+    external-integration/RUNBOOK.md
+    production-fix/RUNBOOK.md
+                            (not a closed list)
 ```
 
-Operational language/framework standards live in `CODE-STANDARDS.md`, not `README.md` —
-`CODE-STANDARDS.md` is the executable instruction artifact the Backend Agent loads; a
-`README.md`, if one exists alongside it, is optional human-facing documentation only and
-carries no normative authority of its own.
+The same canonical-artifact-vs-human-documentation split applies twice in this tree:
+operational language/framework standards live in `CODE-STANDARDS.md`, not `README.md`,
+and operational runbook workflow content lives in each `RUNBOOK.md`, not in
+`runbooks/README.md`. In both cases the `README.md` is optional human-facing
+documentation only and carries no normative authority of its own — the artifact the
+Backend Agent actually loads is `CODE-STANDARDS.md` / `RUNBOOK.md`.
 
 See:
 
@@ -461,4 +501,6 @@ See:
 - [templates/README.md](templates/README.md) — including the
   [backend-assignment.yaml](templates/backend-assignment.yaml) and
   [backend-result.yaml](templates/backend-result.yaml) execution-contract templates
-- [runbooks/README.md](runbooks/README.md)
+- [runbooks/README.md](runbooks/README.md) — what runbooks are, available runbooks, and
+  shared cross-cutting guidance (stop conditions, transactions/consistency,
+  observability)
