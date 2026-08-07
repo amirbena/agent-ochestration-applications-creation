@@ -208,9 +208,9 @@ agents/
   backend/           Backend Agent Skill (see agents/backend/SKILL.md)
     SKILL.md
     policies/
-      global/        universal backend engineering policy
-      languages/      future: per-language policy, e.g. languages/typescript/
-      frameworks/     future: per-framework policy, e.g. frameworks/nestjs/
+      global/        universal backend engineering standard (CODE-STANDARDS.md)
+      languages/      per-language standards (CODE-STANDARDS.md), e.g. languages/typescript/
+      frameworks/     per-framework standards (CODE-STANDARDS.md), e.g. frameworks/nestjs/
     templates/        reusable backend implementation starting points
     runbooks/         repeatable backend engineering workflows
 ```

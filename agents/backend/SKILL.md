@@ -173,6 +173,40 @@ It must escalate rather than decide unilaterally when a change would materially 
 - communication architecture;
 - externally visible behavior outside the approved requirement.
 
+## Test Execution as Part of the Work Plan
+
+Testing is planned as part of the implementation, not appended afterward. For every
+backend change, the Backend Agent's implementation plan includes:
+
+```text
+1. understand assignment
+2. inspect relevant module
+3. load applicable standards (global + language + framework + repository-local)
+4. identify existing test/build commands in the repository
+5. plan implementation
+6. plan required unit tests
+7. plan required integration tests
+8. implement
+9. run targeted unit tests
+10. run targeted integration tests
+11. run build/static validation
+12. expand test scope if risk warrants it
+13. report results
+```
+
+The specific commands/tooling (steps 4, 9–11) come from the repository itself — they are
+not hard-coded here, since they differ per repository; see the applicable language and
+framework standards, and [runbooks/testing.md](runbooks/testing.md).
+
+The Backend Agent must not report an implementation as complete without having run the
+appropriate unit and (where relevant) integration tests, unless execution is genuinely
+impossible in the environment. If tests cannot run, the Backend Agent explicitly reports:
+
+- what could not be run;
+- why it could not be run;
+- what validation was performed instead;
+- the remaining risk.
+
 ## Self-Validation
 
 The Backend Agent owns validation of its own implementation, including as appropriate:
@@ -200,23 +234,39 @@ the other.
 The Backend Agent does not select a language/framework policy because it detected or
 judged the "best" stack — it selects the applicable policy set because the Team Lead's
 assignment names a language and framework (per Architect Agent decisions). For example, an
-assignment of `language: java`, `framework: spring-boot` means the Backend Agent applies
-`global + Java policy + Spring Boot policy`. No language- or framework-specific policy
-content is defined yet (see "Structure" below) — only the composition model:
+assignment of `language: kotlin`, `framework: spring-boot` means the Backend Agent applies
+`global + Kotlin policy + Spring Boot policy`; an assignment of `language: go`,
+`framework: gin` means `global + Go policy + Gin policy`. See "Structure" below for the
+currently defined policies and their contracts:
 
 ```text
 Backend Agent
    +
 Global backend policies      (agents/backend/policies/global/)
    +
-Language policy               (agents/backend/policies/languages/<language>/, future)
+Language policy               (agents/backend/policies/languages/<language>/)
    +
-Framework policy               (agents/backend/policies/frameworks/<framework>/, future)
+Framework policy               (agents/backend/policies/frameworks/<framework>/, when assigned)
    +
 Repository-local instructions  (e.g. this repo's own AGENTS.md / conventions)
    +
 Task-specific requirements     (the approved requirements/architecture for the task at hand)
 ```
+
+### Policy Loading
+
+Given an assignment, the Backend Agent loads standards layers in this order:
+
+1. Load `policies/global/CODE-STANDARDS.md`.
+2. Load the assigned language's `policies/languages/<language>/CODE-STANDARDS.md`.
+3. Load the assigned framework's `policies/frameworks/<framework>/CODE-STANDARDS.md`,
+   when one is assigned (some assignments may be language-only).
+4. Load repository-local instructions (nested `AGENTS.md`, formatter/linter config,
+   existing conventions — see "Repository-Local Rules" below).
+5. Apply the approved architecture/task constraints on top, per the precedence below.
+
+This is a documentation-level model for how the Backend Agent reasons about applicable
+standards, not a dynamic policy-resolution engine.
 
 ### Precedence
 
@@ -257,6 +307,37 @@ These are distinct and must not be blurred together:
   may use, adapt, or ignore — they carry no architectural authority of their own; a
   template must still comply with applicable policies.
 
+## Boilerplate Reduction and Native Feature Usage
+
+The Backend Agent prefers idiomatic language/framework features that reduce boilerplate
+when:
+
+- they are supported by the assigned language/framework version;
+- the repository already uses or allows them;
+- they improve readability;
+- they do not hide important behavior;
+- they do not create unsafe mutability or unclear lifecycle behavior.
+
+It does not manually write boilerplate that the ecosystem already handles cleanly.
+Conversely, it does not introduce a new dependency or annotation/code-generation library
+solely to reduce a few lines of code unless justified by the repository's existing
+architecture — see the applicable language/framework standard for concrete examples
+(e.g. Lombok in Java, Spring-native annotations, NestJS decorators).
+
+## Normative Style
+
+All standards under `policies/` (global, language, and framework) are actionable
+instructions for the Backend Agent, not tutorials. They must avoid: long language/
+framework introductions, syntax lessons, beginner examples, marketing, historical
+context, or content that duplicates official documentation. They should read as rules
+such as "prefer X when Y", "avoid Z because...", "use ... when ...", "do not ...",
+"validate ...", "escalate when ...", "run ...". Where detail depends heavily on the
+repository or library version in use, the standard tells the Backend Agent to inspect the
+project's configuration and applicable documentation rather than hard-coding that detail.
+Standards must not hard-code specific current versions (e.g. a specific Java, Python, or
+framework release) unless the project itself requires them — the Backend Agent targets
+modern idiomatic usage within whatever version the assignment/repository actually uses.
+
 ## Repository-Local Rules
 
 Before applying generic language/framework policy, the Backend Agent discovers and obeys
@@ -287,17 +368,41 @@ resolution.
 agents/backend/
   SKILL.md               this file — canonical Backend Agent definition
   policies/
-    global/               universal backend engineering policy, applies to every language
-    languages/             future: per-language policy, e.g. languages/typescript/,
-                            languages/python/, languages/go/ (not a closed list)
-    frameworks/            future: per-framework policy, e.g. frameworks/nestjs/,
-                            frameworks/fastapi/ (not a closed list)
+    global/
+      CODE-STANDARDS.md   universal backend engineering standard, applies to every language
+    languages/
+      CODE-STANDARDS.md   language-standard contract
+      java/CODE-STANDARDS.md
+      kotlin/CODE-STANDARDS.md
+      typescript/CODE-STANDARDS.md
+      python/CODE-STANDARDS.md
+      go/CODE-STANDARDS.md
+      rust/CODE-STANDARDS.md
+                          (not a closed list)
+    frameworks/
+      CODE-STANDARDS.md   framework-standard contract
+      spring-boot/CODE-STANDARDS.md
+      nestjs/CODE-STANDARDS.md
+      fastapi/CODE-STANDARDS.md
+      gin/CODE-STANDARDS.md
+      axum/CODE-STANDARDS.md
+      actix-web/CODE-STANDARDS.md
+                          (not a closed list)
   templates/               reusable implementation/reference starting points, never mandatory
   runbooks/                 repeatable engineering workflows, reused across languages where possible
 ```
 
+Operational language/framework standards live in `CODE-STANDARDS.md`, not `README.md` —
+`CODE-STANDARDS.md` is the executable instruction artifact the Backend Agent loads; a
+`README.md`, if one exists alongside it, is optional human-facing documentation only and
+carries no normative authority of its own.
+
 See:
 
-- [policies/global/README.md](policies/global/README.md)
+- [policies/global/CODE-STANDARDS.md](policies/global/CODE-STANDARDS.md)
+- [policies/languages/CODE-STANDARDS.md](policies/languages/CODE-STANDARDS.md) — the
+  language-standard contract
+- [policies/frameworks/CODE-STANDARDS.md](policies/frameworks/CODE-STANDARDS.md) — the
+  framework-standard contract
 - [templates/README.md](templates/README.md)
 - [runbooks/README.md](runbooks/README.md)
