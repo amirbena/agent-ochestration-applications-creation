@@ -273,6 +273,15 @@ A failed synchronization/rebase/merge must be reported back to the orchestrating
 section — "Pull Request Assignee" and "Merge Strategy" below add detail to specific
 steps in it rather than restating the whole sequence.
 
+#### Pull Request Description
+
+Every implementation PR must use and populate the repository's canonical PR template at
+[.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) — GitHub applies it
+automatically to new PRs against this repository. The template is the single source of
+truth for PR body structure; do not restate or fork it here. Populating it (including
+Execution Metadata) does not grant the implementing Agent authority to approve its own
+review — see the applicable Agent's `SKILL.md` for review-approval boundaries.
+
 #### Pull Request Assignee
 
 - Determine the authenticated/current Git-hosting user creating the PR.
