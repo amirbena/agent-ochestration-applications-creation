@@ -38,10 +38,22 @@ None.
 
 ## Execution Metadata
 
-<!-- The Agent/model that performed the IMPLEMENTATION, not whichever model opened this PR. Use "Unknown / unavailable from runtime" rather than guessing. -->
+<!--
+Record the Agents/models that materially contributed — not whichever process ran `gh pr create`.
+For single-Agent work, "Implemented by" is enough. Add the optional roles below only when that
+role actually, separately participated — do not populate hypothetical Agents from the expected
+pipeline. If the model is unknown, write "<Model unavailable>" rather than guessing.
+Execution participation (any role below) does not grant independent code-review authority over
+this PR — review approval follows the repository's existing review rules regardless of who is
+listed here.
+-->
 
-- Agent:
-- Model:
+- Implemented by: <Agent> — <Model>
+<!-- Optional, only if they materially and separately participated:
+- Orchestrated by: <Agent> — <Model>
+- Architecture by: <Agent> — <Model>
+- Validated by: <Agent> — <Model>
+-->
 
 ## Related Work
 
