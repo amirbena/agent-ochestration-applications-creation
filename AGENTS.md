@@ -168,10 +168,25 @@ absence of unrelated local changes (per "Before Starting Work" above). Never sil
 discard work in order to create a branch — if the base isn't safe, stop and report
 instead.
 
+No implementation or documentation file may be modified until the dedicated task branch
+exists and is checked out. Creating the branch after edits have already started does not
+satisfy this rule — if work began before switching, stop, revert/stash the premature
+edits, create the branch properly, then reapply the work.
+
 **One implementation scope ≈ one dedicated task branch.** Do not accumulate unrelated
 tasks on the same branch; if a new request is materially separate from the current task
 and the previous work is already completed/merged, start a new branch. Do not create
 unnecessary branches for small edits inside the same active task.
+
+An implementing Agent must never:
+
+- modify files directly on `main` (or another protected/default branch);
+- begin implementation before switching to the dedicated task branch;
+- continue a new, materially separate task on a branch created for a previous task;
+- reuse a branch that already has an open PR for a different task;
+- mix unrelated tasks on the same implementation branch.
+
+Each implementation task gets its own dedicated branch.
 
 ### Branching
 
