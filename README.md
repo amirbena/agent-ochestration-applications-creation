@@ -50,3 +50,27 @@ parallel-execution rules that apply across this repository.
 
 Nothing beyond this exists yet. In particular, there is no Team Lead orchestration, no
 other Agents, and no execution engine.
+
+## Repository Validation (CI)
+
+Every Pull Request against `main` runs the **`Repository Validation`** GitHub Actions
+check ([.github/workflows/repository-validation.yml](.github/workflows/repository-validation.yml)).
+It is deterministic and calls no LLM/API — it checks repository integrity (Markdown
+encoding/formatting, internal link resolution, required Agent/Skill files) and
+machine-checkable Agent contracts (required Skill sections, boundary statements,
+policy/runbook cross-references). This is distinct from — and not a substitute for —
+human or LLM-based code review.
+
+Run it locally the same way CI does:
+
+```bash
+python scripts/validate_repository.py
+pytest tests
+```
+
+`Repository Validation` is intended to be selected as a required status check once a
+branch protection Ruleset is configured for this repository (used together with
+"Require branches to be up to date before merging"). Scenario-based or model-backed
+Agent behavioral evals are an intentionally separate, future extension — not part of
+this required check, since they may be nondeterministic, costly, or depend on external
+services.
