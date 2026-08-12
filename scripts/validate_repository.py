@@ -49,11 +49,15 @@ MARKDOWN_LINK_RE = re.compile(r"\[[^\]\n]*\]\(([^)\s]+)\)")
 
 
 class Issue:
+    """A single validation problem found at a specific repository path."""
+
     def __init__(self, path: Path, message: str) -> None:
+        """Store the offending `path` and a human-readable `message`."""
         self.path = path
         self.message = message
 
     def __str__(self) -> str:
+        """Render as `<path relative to REPO_ROOT>: <message>` for reporting."""
         try:
             rel = self.path.relative_to(REPO_ROOT)
         except ValueError:
@@ -62,6 +66,7 @@ class Issue:
 
 
 def iter_markdown_files(root: Path) -> list[Path]:
+    """Return all `*.md` files under `root`, sorted, excluding EXCLUDED_DIR_NAMES."""
     files = []
     for path in root.rglob("*.md"):
         if any(part in EXCLUDED_DIR_NAMES for part in path.parts):
@@ -71,6 +76,12 @@ def iter_markdown_files(root: Path) -> list[Path]:
 
 
 def read_utf8(path: Path) -> tuple[str | None, str | None]:
+    """Read `path` as UTF-8 text.
+
+    Returns a `(content, error)` tuple: `content` is the decoded text (or
+    `None` on failure), and `error` is a description of the decode failure
+    (or `None` on success).
+    """
     try:
         return path.read_bytes().decode("utf-8"), None
     except UnicodeDecodeError as exc:
@@ -78,20 +89,30 @@ def read_utf8(path: Path) -> tuple[str | None, str | None]:
 
 
 def check_non_empty(content: str) -> bool:
+    """Return `True` if `content` has any non-whitespace text."""
     return content.strip() != ""
 
 
 def check_trailing_whitespace(content: str) -> list[int]:
+    """Return the 1-based line numbers in `content` that end in a space or tab."""
     lines = content.splitlines()
     return [i + 1 for i, line in enumerate(lines) if line != line.rstrip(" \t")]
 
 
 def check_tabs(content: str) -> list[int]:
+    """Return the 1-based line numbers in `content` that contain a tab character."""
     lines = content.splitlines()
     return [i + 1 for i, line in enumerate(lines) if "\t" in line]
 
 
 def extract_relative_link_targets(content: str) -> list[tuple[int, str]]:
+    """Find Markdown link targets in `content`, excluding external/anchor links.
+
+    Returns a list of `(1-based line number, link target)` pairs for every
+    Markdown link whose target is not an `http(s)://`, `mailto:`, or `#`
+    (in-page anchor) link, i.e. the relative links that should be checked
+    against the filesystem.
+    """
     targets = []
     for lineno, line in enumerate(content.splitlines(), start=1):
         for match in MARKDOWN_LINK_RE.finditer(line):
@@ -103,11 +124,22 @@ def extract_relative_link_targets(content: str) -> list[tuple[int, str]]:
 
 
 def resolve_link_target(path: Path, target: str) -> Path:
+    """Resolve a Markdown `target` (from the file at `path`) to an absolute filesystem path.
+
+    Strips any `#fragment` suffix before resolving relative to `path`'s
+    parent directory.
+    """
     target_path = target.split("#", 1)[0]
     return (path.parent / target_path).resolve()
 
 
 def validate_markdown_file(path: Path) -> list[Issue]:
+    """Validate a single Markdown file at `path`.
+
+    Checks UTF-8 decodability, non-emptiness, trailing whitespace, tab
+    characters, and broken relative links. Returns the list of `Issue`s
+    found; an empty list means the file passed all checks.
+    """
     issues: list[Issue] = []
 
     content, decode_error = read_utf8(path)
@@ -143,6 +175,7 @@ def validate_markdown_file(path: Path) -> list[Issue]:
 
 
 def validate_required_root_files() -> list[Issue]:
+    """Check that every path in REQUIRED_ROOT_FILES exists as a file in the repo root."""
     issues = []
     for rel in REQUIRED_ROOT_FILES:
         if not (REPO_ROOT / rel).is_file():
@@ -151,6 +184,12 @@ def validate_required_root_files() -> list[Issue]:
 
 
 def validate_required_agent_files() -> list[Issue]:
+    """Check each `agents/<name>/` directory for its required Agent files.
+
+    Every Agent directory must contain `SKILL.md`. Agents listed in
+    REQUIRED_AGENT_FILES are additionally checked for their full set of
+    required relative paths.
+    """
     issues = []
     agents_dir = REPO_ROOT / "agents"
     if not agents_dir.is_dir():
@@ -174,6 +213,7 @@ def validate_required_agent_files() -> list[Issue]:
 
 
 def run_validation() -> list[Issue]:
+    """Run all repository checks (required files + every Markdown file) and collect Issues."""
     issues: list[Issue] = []
     issues.extend(validate_required_root_files())
     issues.extend(validate_required_agent_files())
@@ -183,6 +223,7 @@ def run_validation() -> list[Issue]:
 
 
 def main() -> int:
+    """Run validation, print the results, and return the process exit code (0 or 1)."""
     issues = run_validation()
     if not issues:
         print("Repository validation passed: no issues found.")
