@@ -42,17 +42,12 @@ EXPECTED_AREA_OPTIONS = [
     "Research",
 ]
 
-EXPECTED_PR_SECTIONS = [
+EXPECTED_VISIBLE_PR_SECTIONS = [
     "## Summary",
-    "## Change Surface",
-    "## What Changed",
-    "## Behavioral / Contract Change",
-    "## Governance Impact",
-    "## Portability / Packaging Impact",
+    "## What changed",
     "## Validation",
-    "## Reviewer Focus",
+    "## Reviewer notes",
     "## Risk / Impact",
-    "## Execution Metadata",
     "## Related / Remaining Work",
 ]
 
@@ -105,11 +100,31 @@ def test_issue_form_area_taxonomy_is_stable_and_not_per_agent():
 
 def test_pr_template_sections_present_and_reviewer_oriented():
     text = PR_TEMPLATE.read_text(encoding="utf-8")
-    for section in EXPECTED_PR_SECTIONS:
+    for section in EXPECTED_VISIBLE_PR_SECTIONS:
         assert section in text, f"PR template missing section: {section}"
-    # Preserved strengths from the previous template.
-    assert "## Risk / Impact" in text
-    assert "## Execution Metadata" in text
+    assert text.index("## Summary") < text.index("## What changed")
+    assert text.index("## What changed") < text.index("## Validation")
+    assert text.index("## Validation") < text.index("## Reviewer notes")
+    assert text.index("## Reviewer notes") < text.index("## Risk / Impact")
+
+    # Specialized traceability remains available without dominating the rendered PR.
+    assert text.count("<details>") >= 2
+    for semantic_marker in [
+        "Change surface",
+        "Behavioral / contract change",
+        "Before:",
+        "After:",
+        "Intentionally unchanged:",
+        "Governance impact",
+        "Portability / packaging impact",
+        "Execution metadata",
+        "participation are metadata — never review approval",
+        "automated, manual/semantic, and not-run/not-applicable",
+        "None",
+        "N/A",
+    ]:
+        assert semantic_marker in text, f"PR template lost required semantics: {semantic_marker}"
+
     # Code-Review-specific global governance must not leak in.
     for leak in ["Self-review prevention", "SHA / delta review", "Approve / Request Changes"]:
         assert leak not in text, f"Code-Review-specific item leaked into PR template: {leak}"
