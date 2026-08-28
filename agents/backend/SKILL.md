@@ -82,13 +82,15 @@ Team Lead
 ### Parallel Internal Work
 
 Internal subagents/workers do not change this external contract. When the Backend Agent
-uses them (including in parallel — see [AGENTS.md](../../AGENTS.md#parallel-execution-rules)):
+uses them (including in parallel — see
+[policies/global/CODE-STANDARDS.md](policies/global/CODE-STANDARDS.md#concurrency-and-parallel-work)):
 
 - they inherit the same assignment the Backend Agent received — none of them get an
   independent Team Lead relationship;
 - the Backend Agent owns decomposition of the work across them;
 - the Backend Agent owns avoiding conflicts between them (file/module ownership, shared
-  mutable state — see "Boundaries" above and the linked parallel-execution rules);
+  mutable state — see "Boundaries" above and the concurrency rules in the global
+  standard);
 - the Backend Agent aggregates their output itself;
 - the Backend Agent reports exactly **one** canonical `backend-result` upward — internal
   workers never report separately to the Team Lead.
@@ -346,7 +348,7 @@ Language policy               (agents/backend/policies/languages/<language>/)
    +
 Framework policy               (agents/backend/policies/frameworks/<framework>/, when assigned)
    +
-Repository-local instructions  (e.g. this repo's own AGENTS.md / conventions)
+Repository-local instructions  (e.g. the target repository's own AGENTS.md / conventions)
    +
 Task-specific requirements     (the approved requirements/architecture for the task at hand)
 ```

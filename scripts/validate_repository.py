@@ -26,7 +26,31 @@ REQUIRED_ROOT_FILES = [
     "README.md",
     "CLAUDE.md",
     ".github/PULL_REQUEST_TEMPLATE.md",
+    ".github/ISSUE_TEMPLATE/engineering-task.yml",
+    ".github/ISSUE_TEMPLATE/config.yml",
+    "policies/README.md",
+    "policies/repository-workflow.md",
+    "policies/git-pr-merge-policy.md",
+    "policies/validation-and-clean-exit.md",
+    "policies/github-issue-pr-authoring.md",
+    "policies/skill-development-policy.md",
 ]
+
+# Root repository-development instruction paths that an Agent Skill's
+# operational files must NOT depend on — see AGENTS.md ("Packaged Agent
+# Skills are independent ...") and policies/skill-development-policy.md
+# ("The portable-Skill boundary"). A relative Markdown link inside an
+# operational Agent file that resolves to one of these (the repo-root
+# AGENTS.md / CLAUDE.md / README.md, or anything under repo-root
+# policies/) breaks portability: installing only agents/<agent>/ would
+# leave the link dangling.
+ROOT_DEV_INSTRUCTION_FILES = {"AGENTS.md", "CLAUDE.md", "README.md"}
+ROOT_DEV_INSTRUCTION_DIRS = {"policies"}
+
+# Operational Agent files are everything under agents/<agent>/ except
+# human-facing README.md files, which are explanatory and may reference
+# root context.
+AGENT_NON_OPERATIONAL_FILENAMES = {"README.md"}
 
 # Per-Agent required files, matching the "Structure" section documented in
 # each Agent's own SKILL.md. Extend this map when a new Agent is added.
@@ -212,11 +236,78 @@ def validate_required_agent_files() -> list[Issue]:
     return issues
 
 
+def is_operational_agent_file(path: Path) -> bool:
+    """Return True if `path` is an operational file inside some `agents/<agent>/`.
+
+    Operational = under `agents/<agent>/` and not a human-facing
+    `README.md`. These must stay portable (see
+    `validate_agent_skill_independence`).
+    """
+    try:
+        rel_parts = path.relative_to(REPO_ROOT).parts
+    except ValueError:
+        return False
+    if len(rel_parts) < 3 or rel_parts[0] != "agents":
+        return False
+    return path.name not in AGENT_NON_OPERATIONAL_FILENAMES
+
+
+def links_to_root_dev_instruction(source: Path, target: str) -> bool:
+    """Return True if a relative Markdown `target` from `source` resolves to a
+    repository-root development-instruction file (AGENTS.md / CLAUDE.md /
+    README.md) or anything under a repository-root development directory
+    (`policies/`)."""
+    resolved = resolve_link_target(source, target)
+    try:
+        rel = resolved.relative_to(REPO_ROOT)
+    except ValueError:
+        return False
+    parts = rel.parts
+    if len(parts) == 1 and parts[0] in ROOT_DEV_INSTRUCTION_FILES:
+        return True
+    return len(parts) >= 1 and parts[0] in ROOT_DEV_INSTRUCTION_DIRS
+
+
+def validate_agent_skill_independence() -> list[Issue]:
+    """Flag operational Agent files that depend on root repository-development instructions.
+
+    An operational file under `agents/<agent>/` (anything but its
+    human-facing `README.md`) must not contain a relative link that
+    resolves to the repo-root `AGENTS.md` / `CLAUDE.md` / `README.md` or
+    into repo-root `policies/`. Such a link means the Skill cannot be
+    consumed on its own. Agent-local links (e.g. to
+    `agents/<agent>/policies/...`) are legitimate and never flagged.
+    """
+    issues: list[Issue] = []
+    agents_dir = REPO_ROOT / "agents"
+    if not agents_dir.is_dir():
+        return issues
+
+    for md_file in iter_markdown_files(agents_dir):
+        if not is_operational_agent_file(md_file):
+            continue
+        content, decode_error = read_utf8(md_file)
+        if decode_error or content is None:
+            continue
+        for lineno, target in extract_relative_link_targets(content):
+            if links_to_root_dev_instruction(md_file, target):
+                issues.append(
+                    Issue(
+                        md_file,
+                        f"line {lineno}: operational Agent file depends on a root "
+                        f"repository-development instruction -> {target} "
+                        f"(move the rule into agents/<agent>/ so the Skill stays portable)",
+                    )
+                )
+    return issues
+
+
 def run_validation() -> list[Issue]:
     """Run all repository checks (required files + every Markdown file) and collect Issues."""
     issues: list[Issue] = []
     issues.extend(validate_required_root_files())
     issues.extend(validate_required_agent_files())
+    issues.extend(validate_agent_skill_independence())
     for md_file in iter_markdown_files(REPO_ROOT):
         issues.extend(validate_markdown_file(md_file))
     return issues

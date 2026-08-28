@@ -38,28 +38,36 @@ Planned Agent roles:
 - Security
 - Release
 
-See [AGENTS.md](AGENTS.md) for the full, canonical Agent model, Git methodology, and
-parallel-execution rules that apply across this repository.
+[AGENTS.md](AGENTS.md) is the canonical, runtime-neutral routing entrypoint: global
+invariants, instruction precedence, canonical-vs-explanatory, and a task-routing table
+into the focused repository-development policies under [policies/](policies/).
 
 ## What exists today
 
-- [AGENTS.md](AGENTS.md) — canonical, vendor-neutral repository-wide instructions.
+- [AGENTS.md](AGENTS.md) — canonical, runtime-neutral repository-wide router.
+- [policies/](policies/README.md) — routed repository-development policies (branching,
+  Git/PR/merge, validation/clean-exit, Issue/PR authoring, Skill development). These
+  govern development of *this* repository and are never packaged with an Agent Skill.
 - [agents/backend/](agents/backend/SKILL.md) — the Backend Agent Skill: role, boundaries,
   self-validation expectations, and the policy/template/runbook structure it composes
   language- and framework-specific behavior from.
+- [.github/](.github/) — the Engineering Task Issue Form
+  ([.github/ISSUE_TEMPLATE/engineering-task.yml](.github/ISSUE_TEMPLATE/engineering-task.yml))
+  and the Pull Request template.
 
 Nothing beyond this exists yet. In particular, there is no Team Lead orchestration, no
-other Agents, and no execution engine.
+Requirements Agent intake, no other Agents, and no execution engine.
 
 ## Repository Validation (CI)
 
 Every Pull Request against `main` runs the **`Repository Validation`** GitHub Actions
 check ([.github/workflows/repository-validation.yml](.github/workflows/repository-validation.yml)).
 It is deterministic and calls no LLM/API — it checks repository integrity (Markdown
-encoding/formatting, internal link resolution, required Agent/Skill files) and
-machine-checkable Agent contracts (required Skill sections, boundary statements,
-policy/runbook cross-references). This is distinct from — and not a substitute for —
-human or LLM-based code review.
+encoding/formatting, internal link resolution, required repository/Agent files), the
+portable-Agent-Skill boundary (no operational file under `agents/<agent>/` depends on
+root `AGENTS.md` / `policies/`), and machine-checkable Agent contracts (required Skill
+sections, boundary statements, policy/runbook cross-references). This is distinct from —
+and not a substitute for — human or LLM-based code review.
 
 Run it locally the same way CI does:
 
