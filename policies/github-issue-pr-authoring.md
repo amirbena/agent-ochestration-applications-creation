@@ -74,6 +74,13 @@ the **scope**, the **evidence required**, and the **expected decision / output**
 detailed findings belong in the research/analysis artifact the Issue produces, not in the
 Issue body.
 
+When the research designs an Agent, state the applicable deliverables as
+`docs/agents/<agent-name>/HLD.md` and `docs/agents/<agent-name>/LLD.md`. Link the
+[canonical HLD template](../docs/templates/AGENT_HLD_TEMPLATE.md),
+[canonical LLD template](../docs/templates/AGENT_LLD_TEMPLATE.md), and the
+[Skill-development policy](skill-development-policy.md#agent-research-and-design-documents)
+instead of embedding their structure or rules in the Issue.
+
 ## Pull Requests
 
 The body answers four questions: **what changed**, **why**, **how it was validated**, and

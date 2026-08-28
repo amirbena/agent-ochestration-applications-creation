@@ -110,6 +110,43 @@ become part of an Agent's portable runtime behavior. Conversely, an Agent's engi
 standards must not migrate into `/policies/` merely to centralize them — they belong with
 the Agent.
 
+## Agent research and design documents
+
+Research for a new Agent, or a material redesign of an Agent's role or Skill contract,
+produces human-reviewed design documents before implementation when the work needs both
+architecture and implementation design:
+
+```text
+research
+  -> HLD
+  -> approved high-level boundaries
+  -> LLD
+  -> implementation task
+```
+
+The preferred locations are:
+
+```text
+docs/agents/<agent-name>/HLD.md
+docs/agents/<agent-name>/LLD.md
+```
+
+Use [the canonical HLD template](../docs/templates/AGENT_HLD_TEMPLATE.md) and
+[the canonical LLD template](../docs/templates/AGENT_LLD_TEMPLATE.md). Do not create an
+Agent design directory until it has a real document.
+
+**HLD owns architectural intent and boundaries; LLD owns implementation design.** The
+LLD links to and stays consistent with its HLD without duplicating it. If LLD work changes
+a high-level assumption, update the HLD rather than silently contradicting it. Neither
+document implements the Agent, creates runtime behavior, or substitutes for the future
+implementation task.
+
+HLDs and LLDs are engineering documents for humans first and Agents second. Optimize for
+fast scanning, explicit decisions, clear ownership, concise diagrams, useful tables,
+bullets, and links to canonical rules. Avoid walls of prose, copied research or Issue
+bodies, duplicated policy, and implementation diaries. Sections may be brief, and
+`None` / `N/A` is valid when a concept genuinely does not apply.
+
 ## No premature `shared/`
 
 Do not create a `shared/` layer in this repository yet. Extract a cross-Agent shared

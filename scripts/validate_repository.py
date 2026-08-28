@@ -34,6 +34,8 @@ REQUIRED_ROOT_FILES = [
     "policies/validation-and-clean-exit.md",
     "policies/github-issue-pr-authoring.md",
     "policies/skill-development-policy.md",
+    "docs/templates/AGENT_HLD_TEMPLATE.md",
+    "docs/templates/AGENT_LLD_TEMPLATE.md",
 ]
 
 # Root repository-development instruction paths that an Agent Skill's

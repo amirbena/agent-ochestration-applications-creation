@@ -51,6 +51,9 @@ into the focused repository-development policies under [policies/](policies/).
 - [agents/backend/](agents/backend/SKILL.md) — the Backend Agent Skill: role, boundaries,
   self-validation expectations, and the policy/template/runbook structure it composes
   language- and framework-specific behavior from.
+- [Agent HLD template](docs/templates/AGENT_HLD_TEMPLATE.md) and
+  [Agent LLD template](docs/templates/AGENT_LLD_TEMPLATE.md) — canonical, human-readable
+  formats for future Agent research and design documents under `docs/agents/<agent-name>/`.
 - [.github/](.github/) — the Engineering Task Issue Form
   ([.github/ISSUE_TEMPLATE/engineering-task.yml](.github/ISSUE_TEMPLATE/engineering-task.yml))
   and the Pull Request template.
