@@ -22,6 +22,30 @@ it without a documented reason tied to that language/framework.
   equivalents, but do not add a new dependency solely to save a few lines — see
   [../../SKILL.md](../../SKILL.md#boilerplate-reduction-and-native-feature-usage).
 
+## Concurrency and parallel work
+
+This standard is self-contained: it does not depend on any repository-level instruction
+file to be understood or applied.
+
+- Parallel execution is an optimization, never a correctness requirement. Every change
+  the Backend Agent produces must remain correct if its work is run sequentially.
+- Parallelize only genuinely independent work. Do not parallelize a step that depends on
+  the output of another step.
+- A shared mutable contract — an API/schema/event contract, a shared source or config
+  file, a shared dependency, an ordered database-migration sequence, or generated
+  code/clients — is a synchronization boundary. Work touching it is serialized or
+  explicitly coordinated, never mutated independently by multiple workers.
+- Preserve clear file and module ownership while parallel work is in flight; never let
+  two workers write the same file without an explicit ownership split.
+- Do not let independent workers generate or apply migrations concurrently, and do not
+  let multiple workers regenerate a derived/generated artifact independently and merge
+  divergent output.
+- If parallel work produces conflicting assumptions, stop and escalate (see
+  [../../SKILL.md](../../SKILL.md#stop-conditions)) — never silently pick one.
+
+This governs concurrency within the Backend Agent's own implementation work, including
+its internal workers (see [../../SKILL.md](../../SKILL.md#parallel-internal-work)).
+
 ## Testing
 
 Testing is a first-class part of implementation, not optional follow-up work — see

@@ -27,11 +27,12 @@ within that assignment — it does not choose the stack or own architecture deci
 
 The Backend Agent is defined as a portable **Skill**, not as a Claude-specific subagent.
 The Skill (this directory) should be consumable by any compatible coding runtime — Claude
-Code, Codex, Cursor, or others — per the repository-wide model in
-[../../AGENTS.md](../../AGENTS.md#agent-model). The Backend Agent may internally use
-subagents/workers as an execution mechanism to decompose its own work, but that is an
-implementation detail: it does not change the external contract with the Team Lead — see
-[SKILL.md](SKILL.md#execution-contract).
+Code, Codex, Cursor, or others. This mirrors the repository-wide "Agent via Skill"
+model, but the Skill does not depend on any repository-root instruction file to function:
+[SKILL.md](SKILL.md) is its self-contained canonical definition. The Backend Agent may
+internally use subagents/workers as an execution mechanism to decompose its own work, but
+that is an implementation detail: it does not change the external contract with the Team
+Lead — see [SKILL.md](SKILL.md#execution-contract).
 
 ## Skill composition
 
