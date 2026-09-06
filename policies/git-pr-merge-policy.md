@@ -72,7 +72,7 @@ report failures rather than using destructive Git commands.
   applies it automatically. The three sources do not overlap: the **template** is the
   single source of truth for PR body *structure* (do not restate or fork it),
   [github-issue-pr-authoring.md](github-issue-pr-authoring.md) owns PR body *content*
-  guidance, and the **Concise, layered PR descriptions** Global Invariant in
+  guidance, and the **Concise, layered Issue and PR descriptions** Global Invariant in
   [../AGENTS.md](../AGENTS.md) is the one-line summary that routes to that policy.
 
 ### PR assignee

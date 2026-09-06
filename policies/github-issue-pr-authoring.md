@@ -14,8 +14,8 @@ those templates. Per [git-pr-merge-policy.md](git-pr-merge-policy.md), the PR te
 the single source of truth for PR body structure; this policy never forks or restates it,
 and never overrides that file's Git/PR mechanics.
 
-This file is the canonical home of the **Concise, layered PR descriptions** Global
-Invariant; [../AGENTS.md](../AGENTS.md) carries only its one-line summary. See
+This file is the canonical home of the **Concise, layered Issue and PR descriptions**
+Global Invariant; [../AGENTS.md](../AGENTS.md) carries only its one-line summary. See
 [../AGENTS.md](../AGENTS.md) for global invariants and routing.
 
 ## Principle
@@ -66,6 +66,28 @@ closable deliverables, split it.
 When the task genuinely needs more, **link** a research artifact, ADR, parent Issue,
 architecture document, or canonical policy — do not paste those into the Issue. Prefer
 native GitHub sub-issues for parent/child relationships when available.
+
+### Information density
+
+An Issue carries enough to **understand, scope, and implement** the work — not a full
+implementation transcript or a speculative design document. The layered model that
+governs PR bodies applies here too: the Issue states intent and desired outcome and
+links the canonical detail rather than reproducing it.
+
+- **State the problem and the desired outcome.** Keep Scope and Acceptance Criteria on
+  observable results, not on the steps taken to reach them.
+- **Link, don't reproduce.** Reference canonical policies, ADRs, architecture documents,
+  and related Issues instead of restating context that already lives in them.
+- **Name implementation detail only when it is a genuine constraint** — a required
+  interface, a compatibility boundary, a fixed sequence. Do not enumerate a
+  file-by-file change plan; deciding where a change lands is implementation work.
+- **Don't repeat one requirement** across Problem, Goal, Scope, and Acceptance Criteria.
+  Each field should add something the others do not.
+- **Move substantial extra detail out of the Issue** — into a follow-up Issue or a
+  canonical design document — rather than growing the body to hold it.
+
+This is density, not a cap: a larger Issue is fine when the work genuinely needs it (see
+[Not a character limit](#not-a-character-limit)).
 
 ### Parent / Epic Issues
 
@@ -142,10 +164,11 @@ restated.
 
 ## Not a character limit
 
-This policy targets cognitive load and scanability, not a line or character count. The
-sizes above are typical ranges, not thresholds to game, and nothing here licenses
-trimming a body below the point of clarity. Preserve required review and traceability
-information; move detail into a linked document rather than deleting it.
+This policy targets cognitive load and scanability for both Issue and PR bodies, not a
+line or character count. The sizes above are typical ranges, not thresholds to game, and
+nothing here licenses trimming a body below the point of clarity — an Issue a human or a
+coding agent cannot act on has been cut too far. Preserve required review and
+traceability information; move detail into a linked document rather than deleting it.
 
 ### Enforcement: evaluated, not adopted
 

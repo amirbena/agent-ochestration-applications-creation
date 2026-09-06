@@ -100,11 +100,13 @@ the routed policy named after it.
 - **One canonical home per normative rule.** A normative rule has exactly one canonical
   location. Other files — this one included — summarize and link; they never restate a
   rule in a way that can drift independently.
-- **Concise, layered PR descriptions.** A Pull Request body is a concise review delta —
-  what changed and why, where the canonical detail lives, how it was validated, and what a
-  reviewer needs to know — not a second specification. Detailed requirements, design
-  rationale, policy text, and history stay in the Issue and canonical documents and are
-  linked, not reproduced; the diff is not restated. Canonical:
+- **Concise, layered Issue and PR descriptions.** An Issue carries enough to understand,
+  scope, and implement the work — not an implementation transcript or a speculative
+  design. A Pull Request body is a concise review delta — what changed and why, where the
+  canonical detail lives, how it was validated, and what a reviewer needs to know.
+  Neither is a second specification: requirements, design rationale, policy text, and
+  history live in the canonical documents (and, for a PR, the Issue) and are linked, not
+  reproduced; the diff is not restated. Canonical:
   [policies/github-issue-pr-authoring.md](policies/github-issue-pr-authoring.md).
 
 ## Instruction Precedence
@@ -164,7 +166,7 @@ the one policy that owns your task. For a directory map of the routed policies, 
 | Start-of-task inspection, base synchronization, preserving unrelated work, dedicated task branch before editing, one scope per branch, resuming an active task branch, branch naming, failed-synchronization behavior | [policies/repository-workflow.md](policies/repository-workflow.md) |
 | Commit discipline, pre-push synchronization, push safety, PR creation and authenticated-creator assignment, squash-merge default, merge safety, admin fallback, post-merge cleanup, verified squash `-D` exception, destructive-Git prohibitions | [policies/git-pr-merge-policy.md](policies/git-pr-merge-policy.md) |
 | Running the applicable validators/tests, validating changed artifacts by scope, reviewing the final diff, cache/artifact hygiene, the clean end state, final branch/HEAD reporting, preserving unexpected state | [policies/validation-and-clean-exit.md](policies/validation-and-clean-exit.md) |
-| Content and shape of agent-authored GitHub Issues and Pull Requests — per-field size guidance, linking canonical docs instead of embedding them, the PR what/why/validation/reviewer-focus shape | [policies/github-issue-pr-authoring.md](policies/github-issue-pr-authoring.md) |
+| Content and shape of agent-authored GitHub Issues and Pull Requests — per-field size guidance, Issue information density, linking canonical docs instead of embedding them, the PR what/why/validation/reviewer-focus shape | [policies/github-issue-pr-authoring.md](policies/github-issue-pr-authoring.md) |
 | Authoring Agent Skills — the `agents/<agent>/` layout, runtime neutrality, the portable-Skill boundary, packaged-Skill independence, repository-vs-Agent policy, no premature `shared/` | [policies/skill-development-policy.md](policies/skill-development-policy.md) |
 
 If a task is not covered by a row above, it is governed by the Global Invariants alone,
