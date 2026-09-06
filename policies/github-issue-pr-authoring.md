@@ -5,17 +5,17 @@ this repository — how much detail belongs in the GitHub-visible body, and what
 a linked document instead.
 
 This is a repository-development policy. It is **not** packaged into any Agent Skill, and
-no `agents/<agent>/` resource may depend on it. It governs the body an author writes; it
-does not change the Issue Form fields in
+no `agents/<agent>/` resource may depend on it. It governs the body an author writes, not
+the field or section structure of the templates: the Issue Form fields in
 [../.github/ISSUE_TEMPLATE/engineering-task.yml](../.github/ISSUE_TEMPLATE/engineering-task.yml)
-or the section structure in
-[../.github/PULL_REQUEST_TEMPLATE.md](../.github/PULL_REQUEST_TEMPLATE.md) — that template
-is the single source of truth for PR body structure (see
-[git-pr-merge-policy.md](git-pr-merge-policy.md)) and this policy never forks or restates
-it — and it never overrides the mechanics in
-[git-pr-merge-policy.md](git-pr-merge-policy.md). The one-line summary of the PR rule is
-the **Concise, layered PR descriptions** Global Invariant in
-[../AGENTS.md](../AGENTS.md); this file is its canonical home. See
+and the sections of
+[../.github/PULL_REQUEST_TEMPLATE.md](../.github/PULL_REQUEST_TEMPLATE.md) are owned by
+those templates. The PR template is the single source of truth for PR body structure;
+this policy never forks or restates it, and it never overrides the Git/PR mechanics in
+[git-pr-merge-policy.md](git-pr-merge-policy.md).
+
+This file is the canonical home of the **Concise, layered PR descriptions** Global
+Invariant; [../AGENTS.md](../AGENTS.md) carries only its one-line summary. See
 [../AGENTS.md](../AGENTS.md) for global invariants and routing.
 
 ## Principle

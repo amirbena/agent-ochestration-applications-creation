@@ -4,7 +4,8 @@ attention, and what risk remains. Keep every answer to the concise review delta.
 Link the Issue, canonical policy, ADR, or doc instead of reproducing requirements,
 design history, test logs, or a command-by-command chronology — the diff already
 shows the file-by-file changes, so do not restate them. Use `None` / `N/A` where a
-section does not apply. Body-content guidance: policies/github-issue-pr-authoring.md.
+section does not apply. Body-content guidance: the GitHub Issue / PR Authoring Policy
+(../policies/github-issue-pr-authoring.md).
 -->
 
 ## Summary
