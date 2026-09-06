@@ -100,6 +100,12 @@ the routed policy named after it.
 - **One canonical home per normative rule.** A normative rule has exactly one canonical
   location. Other files — this one included — summarize and link; they never restate a
   rule in a way that can drift independently.
+- **Concise, layered PR descriptions.** A Pull Request body is a concise review delta —
+  what changed and why, where the canonical detail lives, how it was validated, and what a
+  reviewer needs to know — not a second specification. Detailed requirements, design
+  rationale, policy text, and history stay in the Issue and canonical documents and are
+  linked, not reproduced; the diff is not restated. Canonical:
+  [policies/github-issue-pr-authoring.md](policies/github-issue-pr-authoring.md).
 
 ## Instruction Precedence
 
