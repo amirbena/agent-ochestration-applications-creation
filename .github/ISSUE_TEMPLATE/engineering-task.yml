@@ -62,7 +62,7 @@ body:
     id: problem
     attributes:
       label: Problem
-      description: Describe the problem, not the implementation.
+      description: Describe the problem, not the implementation. Link canonical sources rather than restating them.
       placeholder: What problem are we solving, and why does it matter? (1–3 short paragraphs)
     validations:
       required: true
@@ -80,7 +80,7 @@ body:
     id: scope
     attributes:
       label: Scope
-      description: The work included. Prefer 3–6 focused bullets. Do not restate the problem.
+      description: The work included. Prefer 3–6 focused bullets. Do not restate the problem or write a file-by-file change plan.
       placeholder: |
         - ...
         - ...
