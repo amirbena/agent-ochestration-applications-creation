@@ -8,9 +8,14 @@ This is a repository-development policy. It is **not** packaged into any Agent S
 no `agents/<agent>/` resource may depend on it. It governs the body an author writes; it
 does not change the Issue Form fields in
 [../.github/ISSUE_TEMPLATE/engineering-task.yml](../.github/ISSUE_TEMPLATE/engineering-task.yml)
-or the checklist in
-[../.github/PULL_REQUEST_TEMPLATE.md](../.github/PULL_REQUEST_TEMPLATE.md), and it never
-overrides the mechanics in [git-pr-merge-policy.md](git-pr-merge-policy.md). See
+or the section structure in
+[../.github/PULL_REQUEST_TEMPLATE.md](../.github/PULL_REQUEST_TEMPLATE.md) — that template
+is the single source of truth for PR body structure (see
+[git-pr-merge-policy.md](git-pr-merge-policy.md)) and this policy never forks or restates
+it — and it never overrides the mechanics in
+[git-pr-merge-policy.md](git-pr-merge-policy.md). The one-line summary of the PR rule is
+the **Concise, layered PR descriptions** Global Invariant in
+[../AGENTS.md](../AGENTS.md); this file is its canonical home. See
 [../AGENTS.md](../AGENTS.md) for global invariants and routing.
 
 ## Principle
@@ -83,23 +88,57 @@ instead of embedding their structure or rules in the Issue.
 
 ## Pull Requests
 
-The body answers four questions: **what changed**, **why**, **how it was validated**, and
-**anything a reviewer should look at closely**. Fill the applicable sections of
+### The layered model
+
+The Issue and the canonical documents own the detail; the Pull Request owns the delta.
+
+- **Issue / canonical docs** (policy, ADR, HLD/LLD, parent Issue, commit history, the diff
+  itself) own detailed requirements, design rationale, normative rules, and history.
+- **The PR body** owns a concise **review delta**: what changed and why, where the
+  canonical detail lives, how it was validated, what risk remains, and anything a
+  reviewer specifically needs to know. It is a change summary and a navigation surface —
+  **not a second specification** and not a re-derivation of anything above.
+
+Fill the applicable sections of
 [../.github/PULL_REQUEST_TEMPLATE.md](../.github/PULL_REQUEST_TEMPLATE.md) and mark the
 rest `None` / `N/A`.
 
-Summarize validation:
+### Concrete preferences
 
-```text
-repository validation passed
-N tests passed
-git diff reviewed — no unrelated changes
-```
+- **"What changed": 2–5 high-value bullets**, grouped by behavior or intent. Add a
+  labeled sub-bullet (behavior / contract, governance / policy, portability / packaging)
+  only for a dimension that actually changed.
+- **No mechanical changed-file or changed-surface inventory.** The diff already lists the
+  files and the surfaces touched; do not restate them section by section.
+- **Link, don't reproduce.** Reference the Issue, canonical policy, ADR, or design doc
+  instead of copying requirements, design history, or policy text into the body. If a
+  reviewer needs the "why" in depth, the link is the answer.
+- **Summarize validation; never paste logs.** State the checks run and their outcome, for
+  example:
 
-Do not include: a full chronology of the work; every command run; full test output; the
-Issue's requirements restated; architecture already documented elsewhere; large code
-already visible in the diff; filler such as "carefully reviewed all files". Link the
-Issue or the document instead.
+  ```text
+  repository validation passed
+  N tests passed
+  git diff reviewed — no unrelated changes
+  ```
+
+  Omit a full chronology of the work, every command run, and full command or test output.
+- **Reviewer notes are for the non-obvious only** — decisions a reviewer could not infer
+  from the diff, subtle behavior, deliberate trade-offs, and where to focus. Write
+  `None.` when there is nothing to flag; do not narrate routine work.
+- **Keep Risk / Impact when it materially helps review** — a short `Low / Medium / High`
+  line plus a sentence or two on breaking, runtime, migration, contract, or security
+  impact. Drop it to `None.` when the change carries no meaningful risk rather than
+  padding it.
+- **Specialized impact stays optional and collapsed.** Governance-surface and
+  agent/orchestration metadata (e.g. which Agent produced the change) go in the
+  template's collapsible block and only where they add genuine repository value — never
+  as always-filled ceremony. Execution participation recorded there is metadata, never
+  review approval (see [git-pr-merge-policy.md](git-pr-merge-policy.md)).
+
+Do not include: filler such as "carefully reviewed all files"; architecture already
+documented elsewhere; large code already visible in the diff; the Issue's requirements
+restated.
 
 ## Not a character limit
 
@@ -107,3 +146,23 @@ This policy targets cognitive load and scanability, not a line or character coun
 sizes above are typical ranges, not thresholds to game, and nothing here licenses
 trimming a body below the point of clarity. Preserve required review and traceability
 information; move detail into a linked document rather than deleting it.
+
+### Enforcement: evaluated, not adopted
+
+A mechanically enforced useful-content limit (a `pull_request` workflow running a
+`scripts/pr_description_length.py` with a single authoritative code-point constant, a
+defined normalization algorithm, and an evidence table — as the sibling
+`amirbena/code-review-skill` repository does) was considered and **is not adopted now**:
+
+- Simplifying the template removes the structural driver of oversized PR bodies — the
+  mechanical changed-surface inventory and the always-filled specialized blocks — so the
+  concrete problem is addressed without a numeric gate.
+- A byte gate adds a second body-measurement concern plus a normalization spec and an
+  evidence table to maintain, against this repository's deliberately minimal,
+  stdlib-only validation surface at foundation stage.
+- A number invites gaming (splitting content across links purely to duck the counter)
+  without improving scanability, which is what this section already optimizes for.
+
+Revisit this decision if, after the template change, PR bodies still trend long in
+practice; that would provide the evidence needed to size a limit. If it is later adopted,
+reuse one authoritative constant and add no second body-measurement implementation.

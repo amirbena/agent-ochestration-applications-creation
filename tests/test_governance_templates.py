@@ -48,7 +48,6 @@ EXPECTED_VISIBLE_PR_SECTIONS = [
     "## Validation",
     "## Reviewer notes",
     "## Risk / Impact",
-    "## Related / Remaining Work",
 ]
 
 
@@ -107,23 +106,35 @@ def test_pr_template_sections_present_and_reviewer_oriented():
     assert text.index("## Validation") < text.index("## Reviewer notes")
     assert text.index("## Reviewer notes") < text.index("## Risk / Impact")
 
-    # Specialized traceability remains available without dominating the rendered PR.
-    assert text.count("<details>") >= 2
+    # The PR body is a concise review delta, not a re-derivation of the diff.
+    assert "2–5 high-value bullets" in text
+    assert "do not restate them" in text
+    assert "Summarize results" in text and "do not paste test logs" in text
+    assert "non-obvious" in text
+
+    # Specialized traceability stays available in one optional, collapsed block.
+    assert text.count("<details>") >= 1
     for semantic_marker in [
-        "Change surface",
-        "Behavioral / contract change",
-        "Before:",
-        "After:",
-        "Intentionally unchanged:",
-        "Governance impact",
-        "Portability / packaging impact",
-        "Execution metadata",
-        "participation are metadata — never review approval",
-        "automated, manual/semantic, and not-run/not-applicable",
+        "Specialized impact",
+        "Produced by:",
+        "Governance surface:",
+        "Behavior or contract change:",
+        "Execution participation is metadata, never review approval",
         "None",
         "N/A",
     ]:
         assert semantic_marker in text, f"PR template lost required semantics: {semantic_marker}"
+
+    # The mechanical changed-file / changed-surface inventory is gone (the diff covers it),
+    # and Related / Remaining Work is folded into an optional one-line link, not a section.
+    for removed in [
+        "### Change surface",
+        "- [ ] Agent Skill behavior",
+        "## Related / Remaining Work",
+        "<summary>Execution metadata",
+    ]:
+        assert removed not in text, f"PR template still carries removed ceremony: {removed}"
+    assert "follow-up Issue" in text
 
     # Code-Review-specific global governance must not leak in.
     for leak in ["Self-review prevention", "SHA / delta review", "Approve / Request Changes"]:

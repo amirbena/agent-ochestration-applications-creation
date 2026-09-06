@@ -1,107 +1,63 @@
 <!--
 Write for the reviewer: what changed, why, how it was validated, what deserves
-attention, and what risk remains. Keep answers concise; link supporting Issues or
-canonical documents instead of pasting requirements, logs, or implementation history.
-Use `None` / `N/A` wherever a section does not apply.
+attention, and what risk remains. Keep every answer to the concise review delta.
+Link the Issue, canonical policy, ADR, or doc instead of reproducing requirements,
+design history, test logs, or a command-by-command chronology — the diff already
+shows the file-by-file changes, so do not restate them. Use `None` / `N/A` where a
+section does not apply. Body-content guidance: policies/github-issue-pr-authoring.md.
 -->
 
 ## Summary
 
-<!-- What changed, why, and what outcome should a reviewer expect? -->
+<!-- One or two sentences: what changed, why, and the outcome a reviewer should expect. -->
 
 ## What changed
 
-<!-- Group meaningful changes by behavior or intent; skip mechanical file lists. -->
+<!-- 2–5 high-value bullets grouped by behavior or intent, not a file list. Add a
+labeled sub-bullet only when that dimension actually changed:
+  - Behavior / contract: what a caller or downstream now sees differently
+  - Governance / policy: which canonical rule or invariant moved, and where it now lives
+  - Portability / packaging: effect on standalone Agent-Skill packaging or runtime assumptions
+-->
 
 -
 
 ## Validation
 
-<!-- Report only checks actually performed; summarize results rather than pasting output.
-Include automated, manual/semantic, and not-run/not-applicable items as relevant. -->
+<!-- Summarize results; do not paste test logs or full command output. Cover
+automated, manual / semantic, and not-run / not-applicable checks as relevant. -->
 
 - `command` — result
-- Manual: <!-- what was verified, or N/A -->
+- Manual / semantic: <!-- what was verified, or N/A -->
 - Not run / not applicable: <!-- reason, or None -->
 
 ## Reviewer notes
 
-<!-- Call out non-obvious decisions, subtle behavior, specific review areas, or known
-trade-offs. Write `None.` when there is nothing special to flag. -->
+<!-- Only the non-obvious: decisions a reviewer could not infer from the diff, subtle
+behavior, trade-offs taken, and where to focus review. `None.` when there is nothing
+to flag. -->
 
 None.
 
 ## Risk / Impact
 
-<!-- Low / Medium / High, followed by one or two sentences of context. Mention breaking,
-runtime, migration, contract, or security impact when relevant. -->
+<!-- Keep only when it materially helps review. Low / Medium / High plus one or two
+sentences — call out breaking, runtime, migration, contract, or security impact.
+Write `None.` when the change carries no meaningful risk. -->
 
 Low —
 
 <details>
-<summary>Change surface and specialized impact</summary>
+<summary>Specialized impact — fill only what applies</summary>
 
-<!-- Check every surface touched. -->
+<!-- Every field here is optional and used only where it adds genuine repository
+value, never as always-filled ceremony. Delete a line rather than writing `N/A`
+into it. Reference canonical rules; do not restate them. -->
 
-### Change surface
-
-- [ ] Agent Skill behavior (`agents/<agent>/SKILL.md`)
-- [ ] Agent policy / standards (`agents/<agent>/policies/`)
-- [ ] Agent runbook (`agents/<agent>/runbooks/`)
-- [ ] Agent template / contract (`agents/<agent>/templates/`)
-- [ ] Agent metadata (`agents/<agent>/metadata/`)
-- [ ] Repository governance (`AGENTS.md`, `policies/`, `CLAUDE.md`)
-- [ ] Orchestration / runtime
-- [ ] GitHub / workflow (`.github/`)
-- [ ] Tests / tooling (`scripts/`, `tests/`)
-- [ ] Documentation (`README.md`, Agent `README.md`, `docs/`)
-- [ ] Other: <!-- describe -->
-
-### Behavioral / contract change
-
-<!-- Optional. Use when behavior, contracts, authority, or workflow changed; otherwise
-write `N/A`. -->
-
-- Before:
-- After:
-- Intentionally unchanged:
-
-### Governance impact
-
-<!-- None, or a brief description. Relevant areas may include architecture authority,
-Agent boundaries, orchestration, contract ownership, review/release authority, Git
-lifecycle, or runtime portability. Reference canonical rules; do not restate them. -->
-
-None.
-
-### Portability / packaging impact
-
-<!-- Optional. Note effects on standalone Agent Skill packaging or runtime-specific
-assumptions; otherwise write `None`. -->
-
-None.
+- **Produced by:** <!-- Agent — Model, when a distinct Agent or process produced the change. Execution participation is metadata, never review approval. Omit otherwise. -->
+- **Governance surface:** <!-- which canonical rule, invariant, or authority boundary this touches, and where the normative text now lives. Omit if none. -->
+- **Behavior or contract change:** <!-- a single note, only when behavior, a contract, authority, or workflow actually changed — what changed and what deliberately stays the same. Omit otherwise. -->
 
 </details>
 
-<details>
-<summary>Execution metadata</summary>
-
-<!-- Record only Agents/models that materially participated. Authorship, assignment,
-validation, and other execution participation are metadata — never review approval. If
-the model is unknown, write `Model unavailable` rather than guessing. -->
-
-- Implemented by: Agent — Model
-<!-- Optional, only when a distinct Agent/process performed the role:
-- Orchestrated by: Agent — Model
-- Architecture by: Agent — Model
-- Validated by (execution-side check, not review): Agent — Model
--->
-
-</details>
-
-## Related / Remaining Work
-
-<!-- Optional: related/follow-up Issue, intentionally deferred work, or known remaining
-work. Keep it concise; write `None.` when not applicable. -->
-
-None.
+<!-- Related / follow-up work: add one line linking a related or follow-up Issue when one exists. -->

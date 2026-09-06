@@ -69,9 +69,11 @@ report failures rather than using destructive Git commands.
 - Open the PR from the dedicated task branch against `main`.
 - Populate the repository's canonical PR template at
   [../.github/PULL_REQUEST_TEMPLATE.md](../.github/PULL_REQUEST_TEMPLATE.md) — GitHub
-  applies it automatically. The template is the single source of truth for PR body
-  structure; do not restate or fork it. Body content guidance is owned by
-  [github-issue-pr-authoring.md](github-issue-pr-authoring.md).
+  applies it automatically. The three sources do not overlap: the **template** is the
+  single source of truth for PR body *structure* (do not restate or fork it),
+  [github-issue-pr-authoring.md](github-issue-pr-authoring.md) owns PR body *content*
+  guidance, and the **Concise, layered PR descriptions** Global Invariant in
+  [../AGENTS.md](../AGENTS.md) is the one-line summary that routes to that policy.
 
 ### PR assignee
 
@@ -85,9 +87,9 @@ report failures rather than using destructive Git commands.
 
 **PR assignment is metadata, not approval.** It is not review approval, merge approval,
 or ownership of every concern raised in review. Execution participation recorded in the
-PR template (including "Execution Metadata") likewise does not grant self-review
-authority — review approval follows the applicable Agent's `SKILL.md` review-approval
-boundaries.
+PR template (such as a "Produced by" note in the specialized-impact block) likewise does
+not grant self-review authority — review approval follows the applicable Agent's
+`SKILL.md` review-approval boundaries.
 
 ## Merge strategy
 
