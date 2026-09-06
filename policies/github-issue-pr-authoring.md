@@ -10,9 +10,9 @@ the field or section structure of the templates: the Issue Form fields in
 [../.github/ISSUE_TEMPLATE/engineering-task.yml](../.github/ISSUE_TEMPLATE/engineering-task.yml)
 and the sections of
 [../.github/PULL_REQUEST_TEMPLATE.md](../.github/PULL_REQUEST_TEMPLATE.md) are owned by
-those templates. The PR template is the single source of truth for PR body structure;
-this policy never forks or restates it, and it never overrides the Git/PR mechanics in
-[git-pr-merge-policy.md](git-pr-merge-policy.md).
+those templates. Per [git-pr-merge-policy.md](git-pr-merge-policy.md), the PR template is
+the single source of truth for PR body structure; this policy never forks or restates it,
+and never overrides that file's Git/PR mechanics.
 
 This file is the canonical home of the **Concise, layered PR descriptions** Global
 Invariant; [../AGENTS.md](../AGENTS.md) carries only its one-line summary. See
