@@ -12,7 +12,7 @@ See [../AGENTS.md](../AGENTS.md) for global invariants and routing, and
 
 | Workflow | Trigger | Responsibility | Mutation boundary | Canonical contract |
 | --- | --- | --- | --- | --- |
-| [`repository-validation.yml`](workflows/repository-validation.yml) | `pull_request` → `main` | Run the deterministic repository validator and the `tests/` suite (Markdown integrity, required files, portable-Skill boundary, Agent contracts). | **Read-only.** Reports a pass/fail status check; changes nothing. | [`scripts/validate_repository.py`](../scripts/validate_repository.py), [`tests/`](../tests), [validation-and-clean-exit.md](../policies/validation-and-clean-exit.md) |
+| [`repository-validation.yml`](workflows/repository-validation.yml) | `pull_request` → `main` | Run the deterministic repository validator and the `tests/` suite (Markdown integrity, required files, portable-Skill boundary, Agent contracts). | **Read-only.** Reports a pass/fail status check; changes nothing. | [`scripts/validate_repository.py`](../scripts/validate_repository.py), [`tests/`](../tests) |
 
 Mutating automation from [#28](https://github.com/amirbena/agent-ochestration-applications-creation/issues/28)
 (PR-description length enforcement, `/claim` + `/unclaim`, Issue-label sync) will be added
