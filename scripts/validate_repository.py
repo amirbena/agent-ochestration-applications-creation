@@ -25,6 +25,7 @@ REQUIRED_ROOT_FILES = [
     "AGENTS.md",
     "README.md",
     "CLAUDE.md",
+    "CHANGELOG.md",
     ".github/PULL_REQUEST_TEMPLATE.md",
     ".github/ISSUE_TEMPLATE/engineering-task.yml",
     ".github/ISSUE_TEMPLATE/config.yml",
@@ -34,6 +35,7 @@ REQUIRED_ROOT_FILES = [
     "policies/validation-and-clean-exit.md",
     "policies/github-issue-pr-authoring.md",
     "policies/skill-development-policy.md",
+    "policies/changelog-policy.md",
     "docs/templates/AGENT_HLD_TEMPLATE.md",
     "docs/templates/AGENT_LLD_TEMPLATE.md",
 ]

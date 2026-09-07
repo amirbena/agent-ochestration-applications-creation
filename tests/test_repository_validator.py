@@ -91,7 +91,12 @@ def test_required_root_files_include_policies_and_issue_template():
         "policies/validation-and-clean-exit.md",
         "policies/github-issue-pr-authoring.md",
         "policies/skill-development-policy.md",
+        "policies/changelog-policy.md",
         ".github/ISSUE_TEMPLATE/engineering-task.yml",
         ".github/ISSUE_TEMPLATE/config.yml",
     ]:
         assert rel in validator.REQUIRED_ROOT_FILES
+
+
+def test_required_root_files_include_changelog():
+    assert "CHANGELOG.md" in validator.REQUIRED_ROOT_FILES

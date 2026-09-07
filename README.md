@@ -46,8 +46,11 @@ into the focused repository-development policies under [policies/](policies/).
 
 - [AGENTS.md](AGENTS.md) — canonical, runtime-neutral repository-wide router.
 - [policies/](policies/README.md) — routed repository-development policies (branching,
-  Git/PR/merge, validation/clean-exit, Issue/PR authoring, Skill development). These
-  govern development of *this* repository and are never packaged with an Agent Skill.
+  Git/PR/merge, validation/clean-exit, Issue/PR authoring, Skill development, changelog
+  discipline). These govern development of *this* repository and are never packaged with
+  an Agent Skill.
+- [CHANGELOG.md](CHANGELOG.md) — a Keep a Changelog `## Unreleased` history; when an entry
+  is required is defined in [policies/changelog-policy.md](policies/changelog-policy.md).
 - [agents/backend/](agents/backend/SKILL.md) — the Backend Agent Skill: role, boundaries,
   self-validation expectations, and the policy/template/runbook structure it composes
   language- and framework-specific behavior from.
