@@ -68,6 +68,7 @@ def test_root_policies_are_repository_development_only():
         "policies/validation-and-clean-exit.md",
         "policies/github-issue-pr-authoring.md",
         "policies/skill-development-policy.md",
+        "policies/changelog-policy.md",
     ]:
         assert (REPO_ROOT / policy).is_file(), f"missing root policy: {policy}"
         assert agents_md.count(f"[{policy}]({policy})") >= 1, f"AGENTS.md does not route to {policy}"

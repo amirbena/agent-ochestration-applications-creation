@@ -40,6 +40,7 @@ Skill (`agents/<agent>/SKILL.md`, `.../policies/`, `.../runbooks/`, `.../templat
 | [validation-and-clean-exit.md](validation-and-clean-exit.md) | Running the applicable validators/tests, validating changed artifacts by scope, reviewing the final diff, cache/artifact hygiene, the clean-working-tree end state, final branch/HEAD reporting, and preserving unexpected state instead of deleting it. |
 | [github-issue-pr-authoring.md](github-issue-pr-authoring.md) | Content and shape of agent-authored GitHub Issues and Pull Requests: human-scannable bodies, per-field size guidance, Issue information density, linking canonical docs instead of embedding them, and the layered model where the PR body is a concise review delta rather than a second specification. Canonical home of the **Concise, layered Issue and PR descriptions** invariant. |
 | [skill-development-policy.md](skill-development-policy.md) | Authoring Agent Skills: the `agents/<agent>/` layout, runtime neutrality, the portable-Skill boundary, independence of packaged Skills from root repository-development instructions, and why `shared/` is not introduced yet. |
+| [changelog-policy.md](changelog-policy.md) | The `CHANGELOG.md` `## Unreleased` workflow, when a change requires a changelog entry versus when it does not, and the Keep a Changelog entry format. Canonical home of the **Changelog discipline** invariant. |
 
 ## Ownership rule
 

@@ -108,6 +108,12 @@ the routed policy named after it.
   history live in the canonical documents (and, for a PR, the Issue) and are linked, not
   reproduced; the diff is not restated. Canonical:
   [policies/github-issue-pr-authoring.md](policies/github-issue-pr-authoring.md).
+- **Changelog discipline.** A change that alters a consumer-visible contract — a
+  normative rule, repository automation an author interacts with, the validation
+  contract, or the set of Agents/policies/templates/runbooks — adds a `## Unreleased`
+  entry to [CHANGELOG.md](CHANGELOG.md) in the same Pull Request; purely internal,
+  test-only, or explanatory changes do not. Canonical:
+  [policies/changelog-policy.md](policies/changelog-policy.md).
 
 ## Instruction Precedence
 
@@ -168,6 +174,7 @@ the one policy that owns your task. For a directory map of the routed policies, 
 | Running the applicable validators/tests, validating changed artifacts by scope, reviewing the final diff, cache/artifact hygiene, the clean end state, final branch/HEAD reporting, preserving unexpected state | [policies/validation-and-clean-exit.md](policies/validation-and-clean-exit.md) |
 | Content and shape of agent-authored GitHub Issues and Pull Requests — per-field size guidance, Issue information density, linking canonical docs instead of embedding them, the PR what/why/validation/reviewer-focus shape | [policies/github-issue-pr-authoring.md](policies/github-issue-pr-authoring.md) |
 | Authoring Agent Skills — the `agents/<agent>/` layout, runtime neutrality, the portable-Skill boundary, packaged-Skill independence, repository-vs-Agent policy, no premature `shared/` | [policies/skill-development-policy.md](policies/skill-development-policy.md) |
+| The `CHANGELOG.md` `## Unreleased` workflow, when a change requires a changelog entry and when it does not, and the entry format | [policies/changelog-policy.md](policies/changelog-policy.md) |
 
 If a task is not covered by a row above, it is governed by the Global Invariants alone,
 and a new focused policy should be added (see [Maintainability](#maintainability)) rather
@@ -179,6 +186,7 @@ than expanding this file with detailed procedure.
 AGENTS.md            this file — global invariants, precedence, routing (canonical)
 CLAUDE.md            thin Claude Code adapter that bootstraps into AGENTS.md (not a second source of rules)
 README.md            project overview (explanatory)
+CHANGELOG.md         Keep a Changelog `## Unreleased` history (rules in policies/changelog-policy.md)
 policies/            repository-development policy domains, routed from this file
   README.md          navigational map
   repository-workflow.md
@@ -186,6 +194,7 @@ policies/            repository-development policy domains, routed from this fil
   validation-and-clean-exit.md
   github-issue-pr-authoring.md
   skill-development-policy.md
+  changelog-policy.md
 .github/
   ISSUE_TEMPLATE/
     engineering-task.yml   the Phase-1 engineering-backlog Issue Form

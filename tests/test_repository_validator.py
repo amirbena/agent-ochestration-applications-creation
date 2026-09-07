@@ -85,12 +85,14 @@ def test_agent_readme_is_not_an_operational_file():
 
 def test_required_root_files_include_policies_and_issue_template():
     for rel in [
+        "CHANGELOG.md",
         "policies/README.md",
         "policies/repository-workflow.md",
         "policies/git-pr-merge-policy.md",
         "policies/validation-and-clean-exit.md",
         "policies/github-issue-pr-authoring.md",
         "policies/skill-development-policy.md",
+        "policies/changelog-policy.md",
         ".github/ISSUE_TEMPLATE/engineering-task.yml",
         ".github/ISSUE_TEMPLATE/config.yml",
     ]:
