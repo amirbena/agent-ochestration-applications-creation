@@ -18,6 +18,12 @@ section, until a Release process is introduced.
 
 ### Added
 
+- PR-description useful-content ceiling: `scripts/pr_description_length.py` (one
+  authoritative `PR_BODY_USEFUL_CONTENT_LIMIT` constant and normalization) and a
+  read-only `.github/workflows/pr-description-length.yml` Action on `pull_request` into
+  `main`. `policies/github-issue-pr-authoring.md` "Enforcement" is now *adopted* and
+  `.github/README.md` lists the workflow.
+  ([#30](https://github.com/amirbena/agent-ochestration-applications-creation/issues/30))
 - `CHANGELOG.md` and `policies/changelog-policy.md`: a `## Unreleased` changelog
   discipline with a single canonical definition of when an entry is required, plus a
   **Changelog discipline** `AGENTS.md` Global Invariant and Task Routing row routing to

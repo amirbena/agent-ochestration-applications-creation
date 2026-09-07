@@ -13,11 +13,12 @@ See [../AGENTS.md](../AGENTS.md) for global invariants and routing, and
 | Workflow | Trigger | Responsibility | Mutation boundary | Canonical contract |
 | --- | --- | --- | --- | --- |
 | [`repository-validation.yml`](workflows/repository-validation.yml) | `pull_request` → `main` | Run the deterministic repository validator and the `tests/` suite (Markdown integrity, required files, portable-Skill boundary, Agent contracts). | **Read-only.** Reports a pass/fail status check; changes nothing. | [`scripts/validate_repository.py`](../scripts/validate_repository.py), [`tests/`](../tests) |
+| [`pr-description-length.yml`](workflows/pr-description-length.yml) | `pull_request` (`opened` / `edited` / `reopened`) → `main` | Enforce the single useful-content ceiling on the PR description. | **Read-only.** `permissions: {}`, no token; reads the body from the event payload; a failed status check with an evidence log is the only signal. | [`scripts/pr_description_length.py`](../scripts/pr_description_length.py), [github-issue-pr-authoring.md](../policies/github-issue-pr-authoring.md) ("Enforcement: adopted") |
 
 Mutating automation from [#28](https://github.com/amirbena/agent-ochestration-applications-creation/issues/28)
-(PR-description length enforcement, `/claim` + `/unclaim`, Issue-label sync) will be added
-here as its child PRs land, each with its trigger, least-privilege `permissions:`,
-mutation boundary, and canonical script/policy link.
+(`/claim` + `/unclaim`, Issue-label sync) will be added here as its child PRs land, each
+with its trigger, least-privilege `permissions:`, mutation boundary, and canonical
+script/policy link.
 
 ## Issue and Pull Request templates
 

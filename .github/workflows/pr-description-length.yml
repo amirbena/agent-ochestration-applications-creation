@@ -1,0 +1,34 @@
+name: PR Description Length
+
+# Enforces the single useful-content ceiling in scripts/pr_description_length.py.
+# Read-only: no token permissions (permissions: {}), no PR mutation. The body is
+# read from the event payload, not the GitHub API. A failed status check, with an
+# evidence breakdown in the log, is the only signal.
+
+on:
+  pull_request:
+    types: [opened, edited, reopened]
+    branches:
+      - main
+
+permissions: {}
+
+concurrency:
+  group: pr-description-length-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  pr-description-length:
+    name: PR Description Length
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check PR description useful-content length
+        run: python3 scripts/pr_description_length.py --github-event "$GITHUB_EVENT_PATH"
