@@ -55,8 +55,9 @@ into the focused repository-development policies under [policies/](policies/).
   [Agent LLD template](docs/templates/AGENT_LLD_TEMPLATE.md) — canonical, human-readable
   formats for future Agent research and design documents under `docs/agents/<agent-name>/`.
 - [.github/](.github/) — the Engineering Task Issue Form
-  ([.github/ISSUE_TEMPLATE/engineering-task.yml](.github/ISSUE_TEMPLATE/engineering-task.yml))
-  and the Pull Request template.
+  ([.github/ISSUE_TEMPLATE/engineering-task.yml](.github/ISSUE_TEMPLATE/engineering-task.yml)),
+  the Pull Request template, and a navigational
+  [automation map](.github/README.md) of the workflows and templates.
 
 Nothing beyond this exists yet. In particular, there is no Team Lead orchestration, no
 Requirements Agent intake, no other Agents, and no execution engine.
