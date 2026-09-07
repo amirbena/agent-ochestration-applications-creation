@@ -19,5 +19,8 @@ section, until a Release process is introduced.
 ### Added
 
 - `CHANGELOG.md` and `policies/changelog-policy.md`: a `## Unreleased` changelog
-  discipline with a single canonical definition of when an entry is required.
+  discipline with a single canonical definition of when an entry is required, plus a
+  **Changelog discipline** `AGENTS.md` Global Invariant and Task Routing row routing to
+  the policy, and `CHANGELOG.md` / `policies/changelog-policy.md` added to the
+  `scripts/validate_repository.py` required-file set.
   ([#29](https://github.com/amirbena/agent-ochestration-applications-creation/issues/29))

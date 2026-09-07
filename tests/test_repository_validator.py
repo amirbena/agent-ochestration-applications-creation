@@ -85,7 +85,6 @@ def test_agent_readme_is_not_an_operational_file():
 
 def test_required_root_files_include_policies_and_issue_template():
     for rel in [
-        "CHANGELOG.md",
         "policies/README.md",
         "policies/repository-workflow.md",
         "policies/git-pr-merge-policy.md",
@@ -97,3 +96,7 @@ def test_required_root_files_include_policies_and_issue_template():
         ".github/ISSUE_TEMPLATE/config.yml",
     ]:
         assert rel in validator.REQUIRED_ROOT_FILES
+
+
+def test_required_root_files_include_changelog():
+    assert "CHANGELOG.md" in validator.REQUIRED_ROOT_FILES
