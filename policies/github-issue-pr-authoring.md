@@ -164,28 +164,34 @@ restated.
 
 ## Not a character limit
 
-This policy targets cognitive load and scanability for both Issue and PR bodies, not a
-line or character count. The sizes above are typical ranges, not thresholds to game, and
-nothing here licenses trimming a body below the point of clarity — an Issue a human or a
-coding agent cannot act on has been cut too far. Preserve required review and
-traceability information; move detail into a linked document rather than deleting it.
+This policy targets cognitive load and scanability for both Issue and PR bodies. The
+per-field sizes above are typical ranges, not thresholds to game, and nothing here — the
+enforced ceiling below included — licenses trimming a body below the point of clarity: an
+Issue or PR a human or a coding agent cannot act on has been cut too far. Preserve
+required review and traceability information; move detail into a linked document rather
+than deleting it.
 
-### Enforcement: evaluated, not adopted
+### Enforcement: adopted (PR descriptions only)
 
-A mechanically enforced useful-content limit (a `pull_request` workflow running a
-`scripts/pr_description_length.py` with a single authoritative code-point constant, a
-defined normalization algorithm, and an evidence table — as the sibling
-`amirbena/code-review-skill` repository does) was considered and **is not adopted now**:
+A single mechanically enforced ceiling on a PR description's **useful content** is in
+place:
 
-- Simplifying the template removes the structural driver of oversized PR bodies — the
-  mechanical changed-surface inventory and the always-filled specialized blocks — so the
-  concrete problem is addressed without a numeric gate.
-- A byte gate adds a second body-measurement concern plus a normalization spec and an
-  evidence table to maintain, against this repository's deliberately minimal,
-  stdlib-only validation surface at foundation stage.
-- A number invites gaming (splitting content across links purely to duck the counter)
-  without improving scanability, which is what this section already optimizes for.
+- **One authoritative implementation.** [`scripts/pr_description_length.py`](../scripts/pr_description_length.py)
+  owns the constant `PR_BODY_USEFUL_CONTENT_LIMIT` and the normalization that defines
+  "useful content" — raw text with HTML/template comments, code-fence lines, link and
+  image *targets* (visible text kept), list / task / heading / block-quote / table
+  syntax, and emphasis markers removed, then whitespace runs collapsed. No second
+  body-measurement implementation may be added anywhere.
+- **One dedicated Action.** [`.github/workflows/pr-description-length.yml`](../.github/workflows/pr-description-length.yml)
+  runs only this check on `pull_request` (`opened` / `edited` / `reopened`) into `main`.
+  It is read-only — `permissions: {}`, no token, no PR mutation — and reads the body from
+  the event payload rather than the API. A failed status check, with an evidence
+  breakdown in the log, is the only signal.
+- **A ceiling, not the guidance.** The limit sits far above every real PR body in this
+  repository's history, so exceeding it almost always means the body restates the Issue,
+  the diff, or validation logs — which this policy already says to link, not reproduce.
+  It is a backstop against extreme bloat, not a substitute for the density guidance
+  above, and it does not apply to Issue bodies.
 
-Revisit this decision if, after the template change, PR bodies still trend long in
-practice; that would provide the evidence needed to size a limit. If it is later adopted,
-reuse one authoritative constant and add no second body-measurement implementation.
+Structure stays single-sourced in [../.github/PULL_REQUEST_TEMPLATE.md](../.github/PULL_REQUEST_TEMPLATE.md)
+per [git-pr-merge-policy.md](git-pr-merge-policy.md); this gate measures length only.

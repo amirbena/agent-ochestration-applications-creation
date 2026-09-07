@@ -14,6 +14,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 ISSUE_FORM = REPO_ROOT / ".github/ISSUE_TEMPLATE/engineering-task.yml"
 ISSUE_CONFIG = REPO_ROOT / ".github/ISSUE_TEMPLATE/config.yml"
 PR_TEMPLATE = REPO_ROOT / ".github/PULL_REQUEST_TEMPLATE.md"
+WORKFLOWS_DIR = REPO_ROOT / ".github/workflows"
 
 EXPECTED_ISSUE_FIELDS = [
     "Type",
@@ -69,6 +70,22 @@ def test_issue_form_parses_as_yaml_with_exactly_ten_fields():
         if item.get("type") in {"input", "textarea", "dropdown", "checkboxes"}
     ]
     assert labels == EXPECTED_ISSUE_FIELDS, f"Issue Form fields drifted: {labels}"
+
+
+def test_every_workflow_file_parses_as_yaml_with_jobs():
+    yaml = pytest.importorskip("yaml")
+    workflow_files = sorted(WORKFLOWS_DIR.glob("*.yml")) + sorted(WORKFLOWS_DIR.glob("*.yaml"))
+    assert workflow_files, "expected at least one workflow under .github/workflows/"
+    for path in workflow_files:
+        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        assert isinstance(data, dict), f"{path.name} did not parse to a mapping"
+        assert isinstance(data.get("jobs"), dict) and data["jobs"], f"{path.name} has no jobs"
+
+
+def test_pr_description_length_workflow_is_read_only():
+    text = (WORKFLOWS_DIR / "pr-description-length.yml").read_text(encoding="utf-8")
+    assert "permissions: {}" in text, "the PR-description-length workflow must declare no token permissions"
+    assert "pr_description_length.py" in text
 
 
 def test_issue_form_has_no_routing_or_architecture_fields():
