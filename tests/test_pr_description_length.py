@@ -86,6 +86,31 @@ def test_default_limit_is_a_single_constant():
     assert evidence["limit"] == gate.PR_BODY_USEFUL_CONTENT_LIMIT
 
 
+# --- format_evidence -------------------------------------------------------
+
+def test_format_evidence_fail_block_layout_is_pinned():
+    ok, evidence = gate.evaluate("x" * 12, limit=10)
+    assert gate.format_evidence(ok, evidence).splitlines() == [
+        "PR description useful-content check: FAIL",
+        "",
+        "  raw code points ............. 12",
+        "  useful content code points .. 12",
+        "      (HTML comments, link targets, list/heading/table syntax, and whitespace runs removed)",
+        "  limit ...................... 10",
+        "  overage ................... 2",
+        "",
+        "The limit is a generous ceiling, not the per-field size guidance in",
+        "policies/github-issue-pr-authoring.md. A body over it usually restates the",
+        "Issue, the diff, or validation logs — link those instead of reproducing them.",
+    ]
+
+
+def test_format_evidence_pass_omits_the_failure_note():
+    block = gate.format_evidence(*gate.evaluate("short", limit=6000))
+    assert block.splitlines()[0].endswith("PASS")
+    assert "generous ceiling" not in block
+
+
 # --- main() I/O paths --------------------------------------------------------
 
 def test_main_body_file_pass(tmp_path, capsys):

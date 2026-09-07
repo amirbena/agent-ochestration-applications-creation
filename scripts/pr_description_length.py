@@ -110,6 +110,11 @@ def evaluate(body: str, limit: int = PR_BODY_USEFUL_CONTENT_LIMIT) -> tuple[bool
     }
 
 
+_NORMALIZATION_NOTE = (
+    "(HTML comments, link targets, list/heading/table syntax, and whitespace runs removed)"
+)
+
+
 def format_evidence(ok: bool, evidence: dict) -> str:
     """Render the human-readable evidence block printed to the check log."""
     verdict = "PASS" if ok else "FAIL"
@@ -117,9 +122,8 @@ def format_evidence(ok: bool, evidence: dict) -> str:
         f"PR description useful-content check: {verdict}",
         "",
         f"  raw code points ............. {evidence['raw_code_points']}",
-        f"  useful content code points .. {evidence['useful_content_code_points']}"
-        "   (HTML comments, link targets, list/heading/table syntax,",
-        "                                 and whitespace runs removed)",
+        f"  useful content code points .. {evidence['useful_content_code_points']}",
+        f"      {_NORMALIZATION_NOTE}",
         f"  limit ...................... {evidence['limit']}",
         f"  overage ................... {evidence['overage']}",
     ]
@@ -134,7 +138,13 @@ def format_evidence(ok: bool, evidence: dict) -> str:
 
 
 def _body_from_args(args: argparse.Namespace) -> str | None:
-    """Resolve the PR body from exactly one of the supported sources."""
+    """Resolve the PR body from the one source selected on the command line.
+
+    `main()` passes these through a `required=True` mutually exclusive group, so
+    exactly one of `--github-event` / `--body-file` / `--stdin` is always set.
+    Returns `None` only when `--github-event` points at a payload with no
+    `pull_request` object.
+    """
     if args.github_event is not None:
         with open(args.github_event, encoding="utf-8") as handle:
             event = json.load(handle)
@@ -146,10 +156,7 @@ def _body_from_args(args: argparse.Namespace) -> str | None:
     if args.body_file is not None:
         with open(args.body_file, encoding="utf-8") as handle:
             return handle.read()
-    if args.stdin:
-        return sys.stdin.read()
-    print("error: one of --github-event, --body-file, --stdin is required", file=sys.stderr)
-    return None
+    return sys.stdin.read()
 
 
 def main(argv: list[str] | None = None) -> int:
