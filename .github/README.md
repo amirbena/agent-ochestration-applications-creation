@@ -22,10 +22,16 @@ least-privilege `permissions:`, mutation boundary, and canonical script/policy l
 
 ## Issue and Pull Request templates
 
+Opening **New issue** lands on the chooser at `/issues/new/choose` — **Bug Report |
+Feature Request | Engineering Task** — with no blank-issue option, so every Issue is
+created from one of these forms.
+
 | File | Purpose | Canonical contract |
 | --- | --- | --- |
+| [`ISSUE_TEMPLATE/bug-report.yml`](ISSUE_TEMPLATE/bug-report.yml) | Lightweight "something is broken" report — required *what happened*, an Affected-area dropdown reusing the Engineering Task Area taxonomy, optional context. Applies `bug` (the repository's existing label; the `type:*` scheme has no `type:bug`). | [github-issue-pr-authoring.md](../policies/github-issue-pr-authoring.md) owns body **content**; the Form owns field **structure**. |
+| [`ISSUE_TEMPLATE/feature-request.yml`](ISSUE_TEMPLATE/feature-request.yml) | Lightweight "I want this to behave differently" report — required desired-outcome field, optional area/context. Applies `type:feature` + `enhancement`. | [github-issue-pr-authoring.md](../policies/github-issue-pr-authoring.md) owns body **content**; the Form owns field **structure**. |
 | [`ISSUE_TEMPLATE/engineering-task.yml`](ISSUE_TEMPLATE/engineering-task.yml) | The Phase-1 Engineering Task Issue Form (Type / Area / Priority dropdowns plus Problem / Goal / Scope / Non-Goals / Acceptance Criteria / Dependencies / Validation). | [github-issue-pr-authoring.md](../policies/github-issue-pr-authoring.md) owns body **content**; the Form owns field **structure**. |
-| [`ISSUE_TEMPLATE/config.yml`](ISSUE_TEMPLATE/config.yml) | Disables blank Issues so every Issue uses the Form. | — |
+| [`ISSUE_TEMPLATE/config.yml`](ISSUE_TEMPLATE/config.yml) | Documents the chooser flow and keeps `blank_issues_enabled: false` so every Issue uses a Form; no `contact_links`. | — |
 | [`PULL_REQUEST_TEMPLATE.md`](PULL_REQUEST_TEMPLATE.md) | Applied by GitHub to every PR body. Single source of truth for PR body **structure**. | [git-pr-merge-policy.md](../policies/git-pr-merge-policy.md) (structure ownership), [github-issue-pr-authoring.md](../policies/github-issue-pr-authoring.md) (content guidance). |
 
 ## Keeping this file accurate

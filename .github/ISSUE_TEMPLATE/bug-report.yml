@@ -1,0 +1,46 @@
+name: Bug Report
+description: Something in the orchestration system, an Agent Skill, or the repository tooling is not working as expected.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A lightweight "something is broken" report — not a scoped Engineering
+        Task. State what went wrong; a maintainer or coding agent can follow up
+        for detail. Do not paste secrets, tokens, or private code.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: The broken outcome, plus any error message or command output you saw and what you expected instead.
+      placeholder: What did you run or do, what happened, and what should have happened?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      description: One high-level category, matching the Engineering Task Form's Area taxonomy.
+      options:
+        - Agent Skills
+        - Orchestration
+        - Agent Contracts
+        - Repository Governance
+        - GitHub / Workflow
+        - Quality / Testing
+        - Infrastructure
+        - Documentation
+        - Research
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Anything else that helps — links, related Issues, environment, a minimal reproduction.
+    validations:
+      required: false

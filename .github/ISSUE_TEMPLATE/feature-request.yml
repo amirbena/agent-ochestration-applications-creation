@@ -1,0 +1,46 @@
+name: Feature Request
+description: Propose new or changed behavior for the orchestration system, an Agent Skill, or the repository tooling.
+title: "[Feature]: "
+labels: ["type:feature", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A lightweight "I want this to behave differently" report — not a scoped
+        Engineering Task or a design document. Describe the desired outcome; a
+        maintainer or coding agent works out the implementation later.
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: What should be different?
+      description: The problem you hit and the behavior you want instead. Focus on the outcome, not how to build it.
+      placeholder: Today X happens; instead Y should happen, because …
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      description: One high-level category, matching the Engineering Task Form's Area taxonomy.
+      options:
+        - Agent Skills
+        - Orchestration
+        - Agent Contracts
+        - Repository Governance
+        - GitHub / Workflow
+        - Quality / Testing
+        - Infrastructure
+        - Documentation
+        - Research
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Anything else that helps — links, related Issues, prior discussion.
+    validations:
+      required: false

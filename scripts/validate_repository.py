@@ -27,6 +27,8 @@ REQUIRED_ROOT_FILES = [
     "CLAUDE.md",
     "CHANGELOG.md",
     ".github/PULL_REQUEST_TEMPLATE.md",
+    ".github/ISSUE_TEMPLATE/bug-report.yml",
+    ".github/ISSUE_TEMPLATE/feature-request.yml",
     ".github/ISSUE_TEMPLATE/engineering-task.yml",
     ".github/ISSUE_TEMPLATE/config.yml",
     "policies/README.md",

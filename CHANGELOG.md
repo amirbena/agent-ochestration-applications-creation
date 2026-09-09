@@ -18,6 +18,14 @@ section, until a Release process is introduced.
 
 ### Added
 
+- Bug Report and Feature Request Issue Forms: `.github/ISSUE_TEMPLATE/bug-report.yml`
+  (applies `bug`) and `.github/ISSUE_TEMPLATE/feature-request.yml` (applies
+  `type:feature` + `enhancement`), each short and outcome-first with an Affected-area
+  dropdown reusing the Engineering Task Area taxonomy. `config.yml` now documents the
+  `/issues/new/choose` chooser flow and why `blank_issues_enabled: false` stays; every
+  new Issue is created from one of the three templates. `.github/README.md` lists the
+  forms.
+  ([#38](https://github.com/amirbena/agent-ochestration-applications-creation/issues/38))
 - Automatic Issue-label sync: `scripts/sync_issue_labels.py` (canonical
   Form-value → label mapping, plus a deterministic add/remove plan) and a mutating
   `.github/workflows/sync-issue-labels.yml` (`issues` `opened` / `edited`,

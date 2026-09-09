@@ -11,8 +11,24 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-ISSUE_FORM = REPO_ROOT / ".github/ISSUE_TEMPLATE/engineering-task.yml"
-ISSUE_CONFIG = REPO_ROOT / ".github/ISSUE_TEMPLATE/config.yml"
+ISSUE_TEMPLATE_DIR = REPO_ROOT / ".github/ISSUE_TEMPLATE"
+ISSUE_FORM = ISSUE_TEMPLATE_DIR / "engineering-task.yml"
+BUG_REPORT_FORM = ISSUE_TEMPLATE_DIR / "bug-report.yml"
+FEATURE_REQUEST_FORM = ISSUE_TEMPLATE_DIR / "feature-request.yml"
+ISSUE_CONFIG = ISSUE_TEMPLATE_DIR / "config.yml"
+
+# The lightweight-report Issue Forms and the static labels each applies on
+# submission. `bug` is the repository's existing default label; the `type:*`
+# scheme has no `type:bug` and its Type taxonomy has no "Bug", so bug-report
+# reuses `bug` rather than extending that managed scheme (Issue #38).
+LIGHTWEIGHT_FORM_LABELS = {
+    BUG_REPORT_FORM: ["bug"],
+    FEATURE_REQUEST_FORM: ["type:feature", "enhancement"],
+}
+
+# Top-level keys GitHub's issue-forms schema allows.
+ISSUE_FORM_TOP_LEVEL_KEYS = {"name", "description", "title", "labels", "assignees", "projects", "body"}
+ISSUE_FORM_ELEMENT_TYPES = {"markdown", "input", "textarea", "dropdown", "checkboxes"}
 PR_TEMPLATE = REPO_ROOT / ".github/PULL_REQUEST_TEMPLATE.md"
 WORKFLOWS_DIR = REPO_ROOT / ".github/workflows"
 
@@ -54,11 +70,72 @@ EXPECTED_VISIBLE_PR_SECTIONS = [
 
 def test_issue_template_files_exist():
     assert ISSUE_FORM.is_file()
+    assert BUG_REPORT_FORM.is_file()
+    assert FEATURE_REQUEST_FORM.is_file()
     assert ISSUE_CONFIG.is_file()
+
+
+def test_issue_template_dir_holds_exactly_the_chooser_set():
+    present = {p.name for p in ISSUE_TEMPLATE_DIR.glob("*.yml")}
+    assert present == {"bug-report.yml", "feature-request.yml", "engineering-task.yml", "config.yml"}
 
 
 def test_blank_issues_are_disabled():
     assert "blank_issues_enabled: false" in ISSUE_CONFIG.read_text(encoding="utf-8")
+
+
+def test_config_documents_the_chooser_and_keeps_blank_issues_off():
+    text = ISSUE_CONFIG.read_text(encoding="utf-8")
+    assert "/issues/new/choose" in text, "config.yml must document the chooser route"
+    assert "blank_issues_enabled: false" in text and "blank_issues_enabled: true" not in text
+    # The reason the flag stays false is documented, and no bypass is added.
+    assert "escape hatch" in text or "bypass" in text
+    assert "contact_links:" not in text
+
+
+@pytest.mark.parametrize("form_path", [BUG_REPORT_FORM, FEATURE_REQUEST_FORM])
+def test_lightweight_form_matches_issue_forms_schema_shape(form_path):
+    yaml = pytest.importorskip("yaml")
+    data = yaml.safe_load(form_path.read_text(encoding="utf-8"))
+    assert isinstance(data, dict)
+    assert set(data).issubset(ISSUE_FORM_TOP_LEVEL_KEYS), f"unknown top-level key in {form_path.name}"
+    assert data.get("name") and data.get("description"), "name and description are required"
+    body = data.get("body")
+    assert isinstance(body, list) and body, "body must be a non-empty list"
+    for element in body:
+        assert element.get("type") in ISSUE_FORM_ELEMENT_TYPES, element
+        if element["type"] == "markdown":
+            assert element["attributes"].get("value")
+            continue
+        assert element.get("id"), "non-markdown elements need an id"
+        assert element["attributes"].get("label"), "non-markdown elements need a label"
+        if element["type"] == "dropdown":
+            assert element["attributes"].get("options"), "dropdown needs options"
+
+
+@pytest.mark.parametrize("form_path,expected", list(LIGHTWEIGHT_FORM_LABELS.items()))
+def test_lightweight_form_applies_expected_labels(form_path, expected):
+    yaml = pytest.importorskip("yaml")
+    data = yaml.safe_load(form_path.read_text(encoding="utf-8"))
+    assert data.get("labels") == expected
+
+
+@pytest.mark.parametrize("form_path", [BUG_REPORT_FORM, FEATURE_REQUEST_FORM])
+def test_lightweight_form_area_dropdown_reuses_engineering_task_taxonomy(form_path):
+    yaml = pytest.importorskip("yaml")
+    data = yaml.safe_load(form_path.read_text(encoding="utf-8"))
+    area = next(i for i in data["body"] if i.get("id") == "area")
+    assert area["type"] == "dropdown"
+    assert area["attributes"]["options"] == EXPECTED_AREA_OPTIONS
+
+
+@pytest.mark.parametrize("form_path", [BUG_REPORT_FORM, FEATURE_REQUEST_FORM])
+def test_lightweight_form_stays_short(form_path):
+    yaml = pytest.importorskip("yaml")
+    data = yaml.safe_load(form_path.read_text(encoding="utf-8"))
+    fields = [i for i in data["body"] if i.get("type") != "markdown"]
+    assert 2 <= len(fields) <= 4, f"{form_path.name} should stay a few-field lightweight report"
+    assert sum(1 for f in fields if f.get("validations", {}).get("required")) <= 2
 
 
 def test_issue_form_parses_as_yaml_with_exactly_ten_fields():
