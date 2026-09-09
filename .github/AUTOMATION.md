@@ -3,7 +3,7 @@
 Explanatory map of this repository's GitHub automation: what each workflow triggers on,
 what it is responsible for, what it is allowed to change, and which canonical policy or
 script owns its contract. This file is **navigational** — it never defines a rule. Every
-normative contract lives in the linked policy or script; this README only points at it.
+normative contract lives in the linked policy or script; this file only points at it.
 
 See [../AGENTS.md](../AGENTS.md) for global invariants and routing, and
 [../policies/README.md](../policies/README.md) for the repository-development policies.
