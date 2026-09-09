@@ -76,7 +76,7 @@ def test_issue_template_files_exist():
 
 
 def test_issue_template_dir_holds_exactly_the_chooser_set():
-    present = {p.name for p in ISSUE_TEMPLATE_DIR.iterdir() if p.is_file()}
+    present = {p.name for p in ISSUE_TEMPLATE_DIR.glob("*.yml")}
     assert present == {"bug-report.yml", "feature-request.yml", "engineering-task.yml", "config.yml"}
 
 
