@@ -16,6 +16,14 @@ section, until a Release process is introduced.
 
 ## Unreleased
 
+### Changed
+
+- Renamed `.github/README.md` to `.github/AUTOMATION.md` so GitHub renders the intended
+  root `README.md` as the repository landing page (README files under `.github/` take
+  precedence over the root README). The file's role is unchanged — it stays the
+  navigational map of `.github/` workflows, Issue Forms, and templates. All references
+  (`README.md`, this changelog) now point at the new path.
+
 ### Added
 
 - Bug Report and Feature Request Issue Forms: `.github/ISSUE_TEMPLATE/bug-report.yml`
@@ -23,7 +31,7 @@ section, until a Release process is introduced.
   `type:feature` + `enhancement`), each short and outcome-first with an Affected-area
   dropdown reusing the Engineering Task Area taxonomy. `config.yml` now documents the
   `/issues/new/choose` chooser flow and why `blank_issues_enabled: false` stays; every
-  new Issue is created from one of the three templates. `.github/README.md` lists the
+  new Issue is created from one of the three templates. `.github/AUTOMATION.md` lists the
   forms.
   ([#38](https://github.com/amirbena/agent-ochestration-applications-creation/issues/38))
 - Automatic Issue-label sync: `scripts/sync_issue_labels.py` (canonical
@@ -31,14 +39,14 @@ section, until a Release process is introduced.
   `.github/workflows/sync-issue-labels.yml` (`issues` `opened` / `edited`,
   `permissions: issues: write`, serialized per issue). Reconciles only
   `type:*` / `area:*` / `priority:*` from the Engineering Task Form; non-Form or
-  hand-edited Issues and `priority:P0` are left untouched. `.github/README.md` lists
+  hand-edited Issues and `priority:P0` are left untouched. `.github/AUTOMATION.md` lists
   the workflow.
   ([#33](https://github.com/amirbena/agent-ochestration-applications-creation/issues/33))
 - PR-description useful-content ceiling: `scripts/pr_description_length.py` (one
   authoritative `PR_BODY_USEFUL_CONTENT_LIMIT` constant and normalization) and a
   read-only `.github/workflows/pr-description-length.yml` Action on `pull_request` into
   `main`. `policies/github-issue-pr-authoring.md` "Enforcement" is now *adopted* and
-  `.github/README.md` lists the workflow.
+  `.github/AUTOMATION.md` lists the workflow.
   ([#30](https://github.com/amirbena/agent-ochestration-applications-creation/issues/30))
 - `CHANGELOG.md` and `policies/changelog-policy.md`: a `## Unreleased` changelog
   discipline with a single canonical definition of when an entry is required, plus a

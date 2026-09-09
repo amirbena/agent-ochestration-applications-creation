@@ -36,7 +36,7 @@ The repository is in its **foundation stage**. What that means concretely:
 | Repository governance | [AGENTS.md](AGENTS.md) — the canonical, runtime-neutral entrypoint: global invariants, instruction precedence, and a task-routing table into the focused [policies/](policies/README.md) (branching, Git/PR/merge, validation & clean exit, Issue/PR authoring, Skill development, changelog discipline). |
 | Backend Agent Skill | [agents/backend/](agents/backend/README.md) — the first Agent: role and boundaries in [SKILL.md](agents/backend/SKILL.md), composable global / per-language / per-framework `CODE-STANDARDS.md`, the Team Lead ↔ Backend execution-contract templates, and per-workflow runbooks. |
 | Agent design format | [docs/templates/AGENT_HLD_TEMPLATE.md](docs/templates/AGENT_HLD_TEMPLATE.md) and [docs/templates/AGENT_LLD_TEMPLATE.md](docs/templates/AGENT_LLD_TEMPLATE.md) — the canonical shapes for future Agent research/design documents. |
-| Repository automation | Three GitHub Actions workflows and three Issue Forms behind a template chooser, mapped in [.github/README.md](.github/README.md). |
+| Repository automation | Three GitHub Actions workflows and three Issue Forms behind a template chooser, mapped in [.github/AUTOMATION.md](.github/AUTOMATION.md). |
 | Validation tooling | [scripts/validate_repository.py](scripts/validate_repository.py) plus the [tests/](tests/) suite — deterministic, no LLM calls. |
 | Change history | [CHANGELOG.md](CHANGELOG.md) with a `## Unreleased` workflow defined in [policies/changelog-policy.md](policies/changelog-policy.md). |
 
@@ -77,7 +77,7 @@ depend on the repository-root instructions. Full definitions and rationale are i
 | [AGENTS.md](AGENTS.md) | Canonical repository-wide entrypoint (invariants, precedence, routing). | Understand the rules before making any change. |
 | [policies/](policies/README.md) | Repository-development policies routed from `AGENTS.md`. Govern *this* repo; never packaged with an Agent Skill. | Find the detailed rule for branching, PRs, merges, validation, Skill authoring, or the changelog. |
 | [agents/backend/](agents/backend/README.md) | The Backend Agent Skill. | See how an Agent is defined, bounded, and composed from standards + runbooks. |
-| [.github/](.github/README.md) | Workflows, Issue Forms, and the PR template, with a navigational map. | See what automation runs and what it may change. |
+| [.github/](.github/AUTOMATION.md) | Workflows, Issue Forms, and the PR template, with a navigational map. | See what automation runs and what it may change. |
 | [scripts/](scripts/) | Deterministic validation / automation scripts (stdlib-only). | Run or read the repository checks. |
 | [tests/](tests/) | Repository-structure and Agent-contract tests. | Confirm invariants are actually enforced, not just documented. |
 | [docs/templates/](docs/templates/) | HLD/LLD templates for future Agent design work. | Start a new Agent's research/design document. |
@@ -92,7 +92,7 @@ Two kinds of automation are kept deliberately separate:
 - **Application-creation runtime (planned)** — the future orchestration engine that will
   run Agents against a user's request. Not implemented.
 
-The repository-development automation, all mapped in [.github/README.md](.github/README.md):
+The repository-development automation, all mapped in [.github/AUTOMATION.md](.github/AUTOMATION.md):
 
 | Workflow | Trigger | Does |
 | --- | --- | --- |
@@ -138,7 +138,7 @@ task, work on a dedicated branch, and open a PR using the provided template.
 
 - [AGENTS.md](AGENTS.md) — canonical rules, precedence, and routing (read first).
 - [policies/README.md](policies/README.md) — map of the repository-development policies.
-- [.github/README.md](.github/README.md) — the automation and template map.
+- [.github/AUTOMATION.md](.github/AUTOMATION.md) — the automation and template map.
 - [agents/backend/README.md](agents/backend/README.md) — the Backend Agent overview.
 - [CHANGELOG.md](CHANGELOG.md) — recent consumer-visible changes.
 
