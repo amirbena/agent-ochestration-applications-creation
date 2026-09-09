@@ -88,6 +88,17 @@ def test_pr_description_length_workflow_is_read_only():
     assert "pr_description_length.py" in text
 
 
+def test_sync_issue_labels_workflow_is_least_privilege_and_serialized():
+    yaml = pytest.importorskip("yaml")
+    text = (WORKFLOWS_DIR / "sync-issue-labels.yml").read_text(encoding="utf-8")
+    data = yaml.safe_load(text)
+    assert data.get("permissions") == {"issues": "write"}, "label sync must request only issues:write"
+    assert data.get("concurrency", {}).get("cancel-in-progress") is False, (
+        "label mutations must be serialized, not cancelled mid-run"
+    )
+    assert "sync_issue_labels.py" in text
+
+
 def test_issue_form_has_no_routing_or_architecture_fields():
     text = ISSUE_FORM.read_text(encoding="utf-8")
     for forbidden in FORBIDDEN_ISSUE_FIELDS:
@@ -156,12 +167,6 @@ def test_pr_template_sections_present_and_reviewer_oriented():
     # Code-Review-specific global governance must not leak in.
     for leak in ["Self-review prevention", "SHA / delta review", "Approve / Request Changes"]:
         assert leak not in text, f"Code-Review-specific item leaked into PR template: {leak}"
-
-
-def test_no_issue_label_sync_workflow_added():
-    workflows = REPO_ROOT / ".github/workflows"
-    names = {p.name for p in workflows.iterdir()} if workflows.is_dir() else set()
-    assert "sync-issue-labels.yml" not in names, "issue->label auto-sync is deferred"
 
 
 def test_claude_md_remains_thin():

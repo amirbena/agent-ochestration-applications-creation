@@ -18,6 +18,14 @@ section, until a Release process is introduced.
 
 ### Added
 
+- Automatic Issue-label sync: `scripts/sync_issue_labels.py` (canonical
+  Form-value → label mapping, plus a deterministic add/remove plan) and a mutating
+  `.github/workflows/sync-issue-labels.yml` (`issues` `opened` / `edited`,
+  `permissions: issues: write`, serialized per issue). Reconciles only
+  `type:*` / `area:*` / `priority:*` from the Engineering Task Form; non-Form or
+  hand-edited Issues and `priority:P0` are left untouched. `.github/README.md` lists
+  the workflow.
+  ([#33](https://github.com/amirbena/agent-ochestration-applications-creation/issues/33))
 - PR-description useful-content ceiling: `scripts/pr_description_length.py` (one
   authoritative `PR_BODY_USEFUL_CONTENT_LIMIT` constant and normalization) and a
   read-only `.github/workflows/pr-description-length.yml` Action on `pull_request` into

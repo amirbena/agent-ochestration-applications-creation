@@ -14,11 +14,11 @@ See [../AGENTS.md](../AGENTS.md) for global invariants and routing, and
 | --- | --- | --- | --- | --- |
 | [`repository-validation.yml`](workflows/repository-validation.yml) | `pull_request` → `main` | Run the deterministic repository validator and the `tests/` suite (Markdown integrity, required files, portable-Skill boundary, Agent contracts). | **Read-only.** Reports a pass/fail status check; changes nothing. | [`scripts/validate_repository.py`](../scripts/validate_repository.py), [`tests/`](../tests) |
 | [`pr-description-length.yml`](workflows/pr-description-length.yml) | `pull_request` (`opened` / `edited` / `reopened`) → `main` | Enforce the single useful-content ceiling on the PR description. | **Read-only.** `permissions: {}`, no token; reads the body from the event payload; a failed status check with an evidence log is the only signal. | [`scripts/pr_description_length.py`](../scripts/pr_description_length.py), [github-issue-pr-authoring.md](../policies/github-issue-pr-authoring.md) ("Enforcement: adopted") |
+| [`sync-issue-labels.yml`](workflows/sync-issue-labels.yml) | `issues` (`opened` / `edited`) | Reconcile an Issue's managed labels with its Engineering Task Form fields. | **Mutating**, `permissions: issues: write`. Adds/removes **only** `type:*` / `area:*` / `priority:*` labels the Form can produce; never touches other labels or `priority:P0`. Serialized per issue. | [`scripts/sync_issue_labels.py`](../scripts/sync_issue_labels.py) (canonical Form-value → label mapping) |
 
 Mutating automation from [#28](https://github.com/amirbena/agent-ochestration-applications-creation/issues/28)
-(`/claim` + `/unclaim`, Issue-label sync) will be added here as its child PRs land, each
-with its trigger, least-privilege `permissions:`, mutation boundary, and canonical
-script/policy link.
+(`/claim` + `/unclaim`) will be added here as its child PRs land, each with its trigger,
+least-privilege `permissions:`, mutation boundary, and canonical script/policy link.
 
 ## Issue and Pull Request templates
 
