@@ -92,6 +92,8 @@ def test_required_root_files_include_policies_and_issue_template():
         "policies/github-issue-pr-authoring.md",
         "policies/skill-development-policy.md",
         "policies/changelog-policy.md",
+        ".github/ISSUE_TEMPLATE/bug-report.yml",
+        ".github/ISSUE_TEMPLATE/feature-request.yml",
         ".github/ISSUE_TEMPLATE/engineering-task.yml",
         ".github/ISSUE_TEMPLATE/config.yml",
     ]:

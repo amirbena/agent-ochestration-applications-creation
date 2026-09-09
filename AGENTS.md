@@ -197,8 +197,10 @@ policies/            repository-development policy domains, routed from this fil
   changelog-policy.md
 .github/
   ISSUE_TEMPLATE/
+    bug-report.yml         lightweight "something is broken" Issue Form
+    feature-request.yml    lightweight "behave differently" Issue Form
     engineering-task.yml   the Phase-1 engineering-backlog Issue Form
-    config.yml             blank issues disabled
+    config.yml             chooser flow documented; blank issues disabled
   PULL_REQUEST_TEMPLATE.md
 agents/
   backend/           Backend Agent Skill (see agents/backend/SKILL.md)
