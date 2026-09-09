@@ -90,10 +90,13 @@ def test_pr_description_length_workflow_is_read_only():
 
 def test_sync_issue_labels_workflow_is_least_privilege_and_serialized():
     yaml = pytest.importorskip("yaml")
-    data = yaml.safe_load((WORKFLOWS_DIR / "sync-issue-labels.yml").read_text(encoding="utf-8"))
-    assert data["permissions"] == {"issues": "write"}, "label sync must request only issues:write"
-    assert data["concurrency"]["cancel-in-progress"] is False, "label mutations must not be cancelled mid-run"
-    assert "sync_issue_labels.py" in (WORKFLOWS_DIR / "sync-issue-labels.yml").read_text(encoding="utf-8")
+    text = (WORKFLOWS_DIR / "sync-issue-labels.yml").read_text(encoding="utf-8")
+    data = yaml.safe_load(text)
+    assert data.get("permissions") == {"issues": "write"}, "label sync must request only issues:write"
+    assert data.get("concurrency", {}).get("cancel-in-progress") is False, (
+        "label mutations must be serialized, not cancelled mid-run"
+    )
+    assert "sync_issue_labels.py" in text
 
 
 def test_issue_form_has_no_routing_or_architecture_fields():

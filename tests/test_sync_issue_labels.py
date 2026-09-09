@@ -187,7 +187,7 @@ def test_main_apply_without_token_fails(tmp_path, capsys, monkeypatch):
     assert sync.main(["--github-event", str(event_file), "--apply"]) == 1
 
 
-def test_main_apply_invokes_api_calls(tmp_path, capsys, monkeypatch):
+def test_main_apply_invokes_api_calls_additions_before_removals(tmp_path, capsys, monkeypatch):
     calls = []
     monkeypatch.setattr(sync, "_request", lambda method, url, token, payload=None: calls.append((method, url, payload)))
     monkeypatch.setenv("GITHUB_TOKEN", "x")
@@ -195,7 +195,19 @@ def test_main_apply_invokes_api_calls(tmp_path, capsys, monkeypatch):
     event_file.write_text(json.dumps(_event(FORM_BODY, ["priority:P1"], number=9, repo="o/r")), encoding="utf-8")
     assert sync.main(["--github-event", str(event_file), "--apply"]) == 0
     methods = [c[0] for c in calls]
-    assert methods.count("DELETE") == 1 and methods.count("POST") == 1
-    assert calls[0][0] == "DELETE" and calls[0][1].endswith("/issues/9/labels/priority%3AP1")
-    assert calls[-1][2] == {"labels": ["area:github-workflow", "priority:P2", "type:infrastructure"]}
+    assert methods == ["POST", "DELETE"], "additions must be applied before removals"
+    assert calls[0][2] == {"labels": ["area:github-workflow", "priority:P2", "type:infrastructure"]}
+    assert calls[-1][1].endswith("/issues/9/labels/priority%3AP1")
     assert "Applied." in capsys.readouterr().out
+
+
+def test_main_apply_with_empty_plan_makes_no_api_calls(tmp_path, capsys, monkeypatch):
+    calls = []
+    monkeypatch.setattr(sync, "_request", lambda *a, **k: calls.append(a))
+    monkeypatch.setenv("GITHUB_TOKEN", "x")
+    event_file = tmp_path / "event.json"
+    in_sync = ["type:infrastructure", "area:github-workflow", "priority:P2"]
+    event_file.write_text(json.dumps(_event(FORM_BODY, in_sync)), encoding="utf-8")
+    assert sync.main(["--github-event", str(event_file), "--apply"]) == 0
+    assert calls == []
+    assert "Applied." not in capsys.readouterr().out

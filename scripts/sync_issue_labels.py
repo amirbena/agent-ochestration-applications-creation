@@ -42,6 +42,8 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+_HTTP_TIMEOUT_SECONDS = 30
+
 # --- The canonical Form-value -> label mapping ------------------------------
 # Keys are the exact dropdown option strings in
 # .github/ISSUE_TEMPLATE/engineering-task.yml. Covered by a drift test.
@@ -173,17 +175,22 @@ def _request(method: str, url: str, token: str, payload: dict | None = None) -> 
     if data is not None:
         request.add_header("Content-Type", "application/json")
     # URL is always the fixed api.github.com host built from _API_ROOT.
-    with urllib.request.urlopen(request) as response:
+    with urllib.request.urlopen(request, timeout=_HTTP_TIMEOUT_SECONDS) as response:
         response.read()
 
 
 def apply_changes(repo: str, issue_number: int, add: list[str], remove: list[str], token: str) -> None:
-    """Apply the plan via the GitHub REST API. Removals first, then additions."""
+    """Apply the plan via the GitHub REST API.
+
+    Additions first, then removals: if a call fails partway, the Issue is left
+    transiently over-labelled (recoverable, and re-corrected on the next
+    ``edited`` event) rather than stripped of a namespace.
+    """
+    if add:
+        _request("POST", f"{_API_ROOT}/repos/{repo}/issues/{issue_number}/labels", token, {"labels": add})
     for label in remove:
         encoded = urllib.parse.quote(label, safe="")
         _request("DELETE", f"{_API_ROOT}/repos/{repo}/issues/{issue_number}/labels/{encoded}", token)
-    if add:
-        _request("POST", f"{_API_ROOT}/repos/{repo}/issues/{issue_number}/labels", token, {"labels": add})
 
 
 def compute_from_event(event: dict) -> tuple[str, int, list[str], list[str]]:
@@ -233,7 +240,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     try:
         apply_changes(repo, issue_number, add, remove, token)
-    except (urllib.error.HTTPError, urllib.error.URLError) as exc:
+    except (urllib.error.URLError, TimeoutError) as exc:
         print(f"error: GitHub API call failed: {exc}", file=sys.stderr)
         return 1
     print("Applied.")
