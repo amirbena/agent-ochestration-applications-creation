@@ -43,12 +43,15 @@ LLD_CONCEPTS = [
     "Templates",
     "Internal Workers / Subagents",
     "Workflow / State Model",
+    "Failure Behavior",
+    "Evaluation Readiness",
     "Validation",
     "Repository Integration",
     "Test Strategy",
     "Implementation Sequence",
     "Migration / Compatibility",
     "Remaining Implementation Questions",
+    "Ready for Implementation",
 ]
 
 
@@ -68,6 +71,8 @@ def test_hld_template_preserves_major_concepts():
     assert "humans first and Agents second" in text
     assert "Non-Responsibilities" in text
     assert "Decision | Choice | Rationale" in text
+    assert "Blocking" in text
+    assert "concrete owner and a concrete trigger" in text
 
 
 def test_lld_template_preserves_major_concepts():
@@ -80,8 +85,36 @@ def test_lld_template_preserves_major_concepts():
         "Skill = portable operational definition",
         "Subagent / worker = internal execution mechanism",
         "N/A` is valid",
+        "Blocking",
+        "Ready for an implementation Issue / Not yet ready",
     ]:
         assert marker in text, f"LLD template missing semantic marker: {marker}"
+
+
+def test_templates_link_canonical_boundary_instead_of_restating_it():
+    for path in [HLD_TEMPLATE, LLD_TEMPLATE]:
+        text = read(path)
+        assert (
+            "skill-development-policy.md#agent-research-and-design-documents" in text
+        ), f"{path.name} does not link the canonical HLD/LLD boundary"
+        # The sharpened boundary formula lives once, in the policy — not copied here.
+        assert "ownership + authority + major decisions + system shape" not in text
+
+
+def test_skill_policy_defines_boundary_formula_taxonomy_and_readiness_criteria():
+    text = read(SKILL_POLICY)
+    for marker in [
+        "HLD = ownership + authority + major decisions + system shape",
+        "LLD = contracts + states + mechanisms + failure behavior + implementation boundaries",
+        "### Distinguishing claims",
+        "Fact / evidence",
+        "Rejected alternative",
+        "### Diagram usage",
+        "### Evaluation readiness",
+        "### Ready for implementation",
+        "Blocking",
+    ]:
+        assert marker in text, f"Skill-development policy missing: {marker}"
 
 
 def test_skill_policy_owns_agent_design_workflow_and_paths():
@@ -90,7 +123,7 @@ def test_skill_policy_owns_agent_design_workflow_and_paths():
         "## Agent research and design documents",
         "docs/agents/<agent-name>/HLD.md",
         "docs/agents/<agent-name>/LLD.md",
-        "HLD owns architectural intent and boundaries; LLD owns implementation design.",
+        "HLD = ownership + authority + major decisions + system shape",
         "AGENT_HLD_TEMPLATE.md",
         "AGENT_LLD_TEMPLATE.md",
         "humans first and Agents second",

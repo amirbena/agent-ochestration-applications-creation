@@ -18,6 +18,20 @@ section, until a Release process is introduced.
 
 ### Changed
 
+- Strengthened the Agent HLD/LLD templates
+  (`docs/templates/AGENT_HLD_TEMPLATE.md`, `docs/templates/AGENT_LLD_TEMPLATE.md`) before
+  Issues #12–#22 produce real design documents against them: the HLD/LLD boundary is now
+  a single sharpened formula in `policies/skill-development-policy.md`
+  (`HLD = ownership + authority + major decisions + system shape`,
+  `LLD = contracts + states + mechanisms + failure behavior + implementation
+  boundaries`), with a lightweight fact/constraint/assumption/decision/rejected-alternative
+  vocabulary, required Blocking/Non-blocking tagging on every open question, diagram-usage
+  guidance, and a canonical "ready for implementation" checklist. The LLD template gained
+  `Failure Behavior`, `Evaluation Readiness`, and `Ready for Implementation` sections.
+  `scripts/validate_repository.py` now checks that any real
+  `docs/agents/<agent>/HLD.md` / `LLD.md` carries every required section from its
+  template (structural only, no exact-prose test).
+  ([#43](https://github.com/amirbena/agent-ochestration-applications-creation/issues/43))
 - Renamed `.github/README.md` to `.github/AUTOMATION.md` so GitHub renders the intended
   root `README.md` as the repository landing page (README files under `.github/` take
   precedence over the root README). The file's role is unchanged — it stays the

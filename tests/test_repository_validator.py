@@ -102,3 +102,64 @@ def test_required_root_files_include_policies_and_issue_template():
 
 def test_required_root_files_include_changelog():
     assert "CHANGELOG.md" in validator.REQUIRED_ROOT_FILES
+
+
+# --- Agent design-document heading structure (Issue #43) -------------------
+
+def test_extract_h2_headings():
+    content = "# Title\n\n## First\n\ntext\n\n## Second\n"
+    assert validator.extract_h2_headings(content) == ["First", "Second"]
+
+
+def test_design_doc_heading_check_passes_when_no_docs_agents_dir(tmp_path, monkeypatch):
+    monkeypatch.setattr(validator, "REPO_ROOT", tmp_path)
+    assert validator.validate_agent_design_doc_headings() == []
+
+
+def test_design_doc_heading_check_flags_missing_sections(tmp_path, monkeypatch):
+    monkeypatch.setattr(validator, "REPO_ROOT", tmp_path)
+
+    templates_dir = tmp_path / "docs" / "templates"
+    templates_dir.mkdir(parents=True)
+    (templates_dir / "AGENT_HLD_TEMPLATE.md").write_text(
+        "# Template\n\n## Purpose\n\n## Open Questions\n", encoding="utf-8"
+    )
+    (templates_dir / "AGENT_LLD_TEMPLATE.md").write_text(
+        "# Template\n\n## Design Context\n", encoding="utf-8"
+    )
+
+    agent_dir = tmp_path / "docs" / "agents" / "sample"
+    agent_dir.mkdir(parents=True)
+    (agent_dir / "HLD.md").write_text("# Sample HLD\n\n## Purpose\n", encoding="utf-8")
+    (agent_dir / "LLD.md").write_text(
+        "# Sample LLD\n\n## Design Context\n", encoding="utf-8"
+    )
+
+    issues = validator.validate_agent_design_doc_headings()
+    assert len(issues) == 1
+    assert "HLD.md" in str(issues[0].path)
+    assert "Open Questions" in issues[0].message
+
+
+def test_design_doc_heading_check_passes_when_all_sections_present(tmp_path, monkeypatch):
+    monkeypatch.setattr(validator, "REPO_ROOT", tmp_path)
+
+    templates_dir = tmp_path / "docs" / "templates"
+    templates_dir.mkdir(parents=True)
+    (templates_dir / "AGENT_HLD_TEMPLATE.md").write_text(
+        "# Template\n\n## Purpose\n", encoding="utf-8"
+    )
+    (templates_dir / "AGENT_LLD_TEMPLATE.md").write_text(
+        "# Template\n\n## Design Context\n", encoding="utf-8"
+    )
+
+    agent_dir = tmp_path / "docs" / "agents" / "sample"
+    agent_dir.mkdir(parents=True)
+    (agent_dir / "HLD.md").write_text(
+        "# Sample HLD\n\n## Purpose\n\nExtra detail.\n", encoding="utf-8"
+    )
+    (agent_dir / "LLD.md").write_text(
+        "# Sample LLD\n\n## Design Context\n", encoding="utf-8"
+    )
+
+    assert validator.validate_agent_design_doc_headings() == []

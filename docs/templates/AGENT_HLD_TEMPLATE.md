@@ -6,8 +6,13 @@ clear enough to scan in roughly 5–10 minutes. Prefer compact tables, bullets, 
 diagrams over long narrative. Link canonical policies instead of copying them. Keep a
 section brief or write `None` / `N/A` when it genuinely does not apply.
 
-The HLD owns **why the Agent exists, what it owns, where it sits, and how it interacts at
-a high level**. It does not prescribe files or become an implementation diary.
+The HLD owns **ownership, authority, major decisions, and system shape** — why the Agent
+exists, what it owns, where it sits, and how it interacts at a high level. It does not
+prescribe files, contracts, or mechanisms (that is the LLD's job) and never becomes an
+implementation diary. See
+[skill-development-policy.md](../../policies/skill-development-policy.md#agent-research-and-design-documents)
+for the canonical HLD/LLD boundary, the claim-kind vocabulary (fact, constraint,
+assumption, decision, rejected alternative, open question), and diagram-usage guidance.
 
 ## Purpose
 
@@ -53,7 +58,9 @@ Agent "does not" do something.
 | <area> | <local decision boundary> | <owning authority and trigger> |
 
 Distinguish implementation-local choices from product, requirements, architecture,
-shared-contract, review, release, and human-approval authority.
+shared-contract, review, release, and human-approval authority. The "escalation from"
+column must name a concrete owner and a concrete trigger — "architecture team" or "as
+needed" is not specific enough for a newcomer to act on.
 
 ## Inputs
 
@@ -115,7 +122,8 @@ implementation detail unless an approved external contract requires otherwise.
 ## Key Design Decisions
 
 Record actual choices with design impact. Link an ADR if one is later warranted; do not
-create a full ADR here.
+create a full ADR here. In **Rationale**, distinguish what is fact/evidence, constraint,
+assumption, or rejected alternative — see the claim-kind vocabulary linked above.
 
 | Decision | Choice | Rationale |
 | --- | --- | --- |
@@ -124,8 +132,11 @@ create a full ADR here.
 ## Open Questions
 
 Include only unresolved questions that could change architecture, authority, contracts,
-or scope.
+or scope. Mark every question **Blocking** or **Non-blocking** — see
+[Open questions and blocking status](../../policies/skill-development-policy.md#agent-research-and-design-documents).
+A **Blocking** question must be resolved before this research is ready for an
+implementation Issue.
 
-| Question | Why it matters | Owner / next decision point |
-| --- | --- | --- |
-| <question> | <design impact> | <owner or approval point> |
+| Question | Why it matters | Blocking? | Owner / next decision point |
+| --- | --- | --- | --- |
+| <question> | <design impact> | <Blocking / Non-blocking> | <owner or approval point> |

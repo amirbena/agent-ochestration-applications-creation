@@ -135,17 +135,81 @@ Use [the canonical HLD template](../docs/templates/AGENT_HLD_TEMPLATE.md) and
 [the canonical LLD template](../docs/templates/AGENT_LLD_TEMPLATE.md). Do not create an
 Agent design directory until it has a real document.
 
-**HLD owns architectural intent and boundaries; LLD owns implementation design.** The
-LLD links to and stays consistent with its HLD without duplicating it. If LLD work changes
-a high-level assumption, update the HLD rather than silently contradicting it. Neither
-document implements the Agent, creates runtime behavior, or substitutes for the future
-implementation task.
+**The HLD/LLD boundary, stated once:**
+
+```text
+HLD = ownership + authority + major decisions + system shape
+LLD = contracts + states + mechanisms + failure behavior + implementation boundaries
+```
+
+The LLD links to and stays consistent with its HLD without duplicating it. If LLD work
+changes a high-level assumption, update the HLD rather than silently contradicting it.
+Neither document implements the Agent, creates runtime behavior, or substitutes for the
+future implementation task. This is the canonical statement of the boundary; the
+templates link here instead of restating it.
 
 HLDs and LLDs are engineering documents for humans first and Agents second. Optimize for
 fast scanning, explicit decisions, clear ownership, concise diagrams, useful tables,
 bullets, and links to canonical rules. Avoid walls of prose, copied research or Issue
 bodies, duplicated policy, and implementation diaries. Sections may be brief, and
 `None` / `N/A` is valid when a concept genuinely does not apply.
+
+### Distinguishing claims
+
+An HLD or LLD mixes several kinds of statement. Tag the kind when it is not obvious from
+context, so a reader never has to guess whether something is settled or assumed:
+
+| Kind | Meaning |
+| --- | --- |
+| Fact / evidence | Observed or verifiable (existing code, a prior Issue, a measured result) |
+| Constraint | A boundary the design must respect but did not choose (portability, an existing contract, a Global Invariant) |
+| Assumption | Treated as true for this design but not verified; note what would invalidate it |
+| Decision | A choice actually made, with its rationale |
+| Rejected alternative | An option considered and not chosen, with why |
+| Open question | Unresolved; see below |
+
+This is a vocabulary for prose and table cells, not a new mandatory document type or an
+ADR process — use it inline (e.g. in a **Rationale** or **Why it matters** cell) wherever
+it removes ambiguity about what kind of claim is being made.
+
+### Open questions and blocking status
+
+Every open question (an HLD's *Open Questions* table, an LLD's *Remaining Implementation
+Questions* table) must be marked **Blocking** or **Non-blocking**. A **Blocking**
+question means implementation cannot correctly start until it is resolved; leaving it
+unmarked is not a valid substitute for marking it non-blocking. "Undecided" must be
+visible in this column, never left to hide inside prose.
+
+### Diagram usage
+
+A diagram earns its place when it clarifies something a table or bullets cannot: a
+multi-Agent interaction, a dependency graph, a state machine, concurrency, an authority
+flow, or a multi-stage lifecycle. Otherwise, prefer tables and bullets. Diagrams are
+never mandatory for template symmetry — a section with no useful diagram simply has none.
+
+### Evaluation readiness
+
+An LLD should expose what a future benchmark/evaluation harness would need, without
+designing that harness: observable success, failure states, contract violations,
+authority violations, expected outputs, which decisions are deterministic versus
+LLM-made, and what evidence artifacts (logs, diffs, validation output) a harness could
+inspect. `N/A` is valid for an Agent where a property genuinely does not apply yet.
+
+### Ready for implementation
+
+A piece of Agent research becomes an implementation Issue only once:
+
+- authority is clear (the HLD's Authority and Decision Boundaries has no unresolved gap);
+- contracts are clear (the LLD's Assignment/Result Contract is stable);
+- lifecycle is clear (the LLD's Workflow/State Model, or `N/A`, is settled);
+- important failure behavior is clear (the LLD's Failure Behavior is settled);
+- every **Blocking** open question is resolved (a **Non-blocking** one may remain open);
+- implementation can be split into roughly 3–8 bounded, ordered steps (the LLD's
+  Implementation Sequence).
+
+Until all of these hold, the work stays research/design — do not open an implementation
+Issue against it. This is the canonical criteria list; the LLD template's *Ready for
+Implementation* section applies it per-Agent and links here rather than restating it.
 
 ## No premature `shared/`
 
