@@ -76,7 +76,8 @@ REQUIRED_AGENT_FILES: dict[str, list[str]] = {
 }
 
 MARKDOWN_LINK_RE = re.compile(r"\[[^\]\n]*\]\(([^)\s]+)\)")
-H2_HEADING_RE = re.compile(r"^## (.+)$", re.MULTILINE)
+H2_HEADING_RE = re.compile(r"^## (.+)$")
+FENCE_RE = re.compile(r"^\s*```")
 
 # Canonical Agent design-document templates and the file name a real design
 # document must match to be checked against each. Kept alongside
@@ -319,8 +320,24 @@ def validate_agent_skill_independence() -> list[Issue]:
 
 
 def extract_h2_headings(content: str) -> list[str]:
-    """Return the ordered list of level-2 (`## `) Markdown heading texts in `content`."""
-    return [heading.strip() for heading in H2_HEADING_RE.findall(content)]
+    """Return the ordered list of level-2 (`## `) Markdown heading texts in `content`.
+
+    Fence-aware: a line inside a ``` ... ``` fenced code block is never treated
+    as a heading, even if it happens to start with `## ` (e.g. a documented
+    example heading quoted inside an illustrative snippet).
+    """
+    headings = []
+    inside_fence = False
+    for line in content.splitlines():
+        if FENCE_RE.match(line):
+            inside_fence = not inside_fence
+            continue
+        if inside_fence:
+            continue
+        match = H2_HEADING_RE.match(line)
+        if match:
+            headings.append(match.group(1).strip())
+    return headings
 
 
 def validate_agent_design_doc_headings() -> list[Issue]:

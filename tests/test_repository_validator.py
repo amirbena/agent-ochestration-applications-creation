@@ -111,6 +111,18 @@ def test_extract_h2_headings():
     assert validator.extract_h2_headings(content) == ["First", "Second"]
 
 
+def test_extract_h2_headings_ignores_headings_inside_fenced_code_blocks():
+    content = (
+        "# Title\n\n## Real Heading\n\n"
+        "```text\n## Quoted Example Heading\n```\n\n"
+        "## Another Real Heading\n"
+    )
+    assert validator.extract_h2_headings(content) == [
+        "Real Heading",
+        "Another Real Heading",
+    ]
+
+
 def test_design_doc_heading_check_passes_when_no_docs_agents_dir(tmp_path, monkeypatch):
     monkeypatch.setattr(validator, "REPO_ROOT", tmp_path)
     assert validator.validate_agent_design_doc_headings() == []
