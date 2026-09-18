@@ -6,9 +6,14 @@ tables, bullets, compact diagrams, trees, and short examples. Link
 canonical policies rather than copying them. Keep a section brief or write `None` / `N/A`
 when it genuinely does not apply.
 
-The LLD owns **implementation design**: enough detail to begin building the Agent Skill
-without rediscovering its architecture. It stops before implementation and is not code,
-command output, a chronological research log, or a file-by-file execution diary.
+The LLD owns **contracts, states, mechanisms, failure behavior, and implementation
+boundaries**: enough detail to begin building the Agent Skill without rediscovering its
+architecture. It stops before implementation and is not code, command output, a
+chronological research log, or a file-by-file execution diary. It never re-decides
+ownership or authority — those belong to the HLD. See
+[skill-development-policy.md](../../policies/skill-development-policy.md#agent-research-and-design-documents)
+for the canonical HLD/LLD boundary, the claim-kind vocabulary, evaluation-readiness
+expectations, and the ready-for-implementation criteria this design must meet.
 
 ## Design Context
 
@@ -131,6 +136,32 @@ states. `N/A` is valid; do not add a state machine for template symmetry.
 | --- | --- | --- | --- |
 | <state> | <condition> | <state(s)> | <action or output> |
 
+## Failure Behavior
+
+Mechanism-level failure handling that implements the HLD's Failure and Escalation Model
+(link it; do not restate its escalation targets here). Cover retries, timeouts, partial
+failure, and error propagation where the Agent has any.
+
+| Failure mode | Detected by | Mechanism response | Evidence produced |
+| --- | --- | --- | --- |
+| <failure mode or None> | <check or signal> | <retry / abort / partial result / escalate> | <log, status field, or artifact> |
+
+## Evaluation Readiness
+
+State what this design exposes so a future benchmark/evaluation harness can assess the
+Agent, without designing that harness here — see
+[skill-development-policy.md](../../policies/skill-development-policy.md#agent-research-and-design-documents).
+
+| Property | How it is observable in this design |
+| --- | --- |
+| Success | <what a passing run looks like> |
+| Failure states | <link to Failure Behavior above> |
+| Contract violations | <what violates the Assignment/Result Contract> |
+| Authority violations | <what would exceed the HLD's Authority and Decision Boundaries> |
+| Expected outputs | <link to Result Contract> |
+| Deterministic vs. LLM-made decisions | <which steps are rule-based vs. model judgment> |
+| Evidence artifacts | <logs, diffs, or validation output a harness could inspect> |
+
 ## Validation
 
 Define how correctness of the future Skill will be proven, including structural or
@@ -176,8 +207,27 @@ shell commands or a chronological diary.
 
 ## Remaining Implementation Questions
 
-Only include questions whose answer materially changes implementation.
+Only include questions whose answer materially changes implementation. Mark every
+question **Blocking** or **Non-blocking** — a **Blocking** question must be resolved
+before this design is ready for an implementation Issue.
 
-| Question | Implementation impact | Owner / resolution point |
+| Question | Implementation impact | Blocking? | Owner / resolution point |
+| --- | --- | --- | --- |
+| <question> | <files, contracts, tests, or sequence affected> | <Blocking / Non-blocking> | <owner> |
+
+## Ready for Implementation
+
+Apply the canonical criteria in
+[skill-development-policy.md](../../policies/skill-development-policy.md#agent-research-and-design-documents)
+to this Agent. Do not restate the criteria — only their status here.
+
+| Criterion | Met? | Evidence |
 | --- | --- | --- |
-| <question> | <files, contracts, tests, or sequence affected> | <owner> |
+| Authority is clear | <Yes / No> | <link to the HLD's Authority and Decision Boundaries> |
+| Contracts are clear | <Yes / No> | <link to Assignment/Result Contract above> |
+| Lifecycle is clear (or `N/A`) | <Yes / No / N/A> | <link to Workflow / State Model above> |
+| Important failure behavior is clear | <Yes / No> | <link to Failure Behavior above> |
+| Every Blocking open question is resolved | <Yes / No> | <link to Remaining Implementation Questions above> |
+| Implementation splits into bounded steps | <Yes / No> | <link to Implementation Sequence above> |
+
+**Overall:** <Ready for an implementation Issue / Not yet ready> — <one-line reason>.

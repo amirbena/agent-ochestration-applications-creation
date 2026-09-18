@@ -106,7 +106,9 @@ When the research designs an Agent, state the applicable deliverables as
 [canonical HLD template](../docs/templates/AGENT_HLD_TEMPLATE.md),
 [canonical LLD template](../docs/templates/AGENT_LLD_TEMPLATE.md), and the
 [Skill-development policy](skill-development-policy.md#agent-research-and-design-documents)
-instead of embedding their structure or rules in the Issue.
+instead of embedding their structure or rules in the Issue. A follow-up implementation
+Issue is only opened once the LLD's own *Ready for Implementation* section says so, per
+the canonical criteria in that same policy section — do not restate those criteria here.
 
 ## Pull Requests
 

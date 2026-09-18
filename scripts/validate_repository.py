@@ -76,6 +76,17 @@ REQUIRED_AGENT_FILES: dict[str, list[str]] = {
 }
 
 MARKDOWN_LINK_RE = re.compile(r"\[[^\]\n]*\]\(([^)\s]+)\)")
+H2_HEADING_RE = re.compile(r"^## (.+)$")
+FENCE_RE = re.compile(r"^\s*```")
+
+# Canonical Agent design-document templates and the file name a real design
+# document must match to be checked against each. Kept alongside
+# REQUIRED_ROOT_FILES above (which only checks the templates themselves
+# exist) — see `validate_agent_design_doc_headings`.
+AGENT_DESIGN_DOC_TEMPLATES: list[tuple[str, str]] = [
+    ("HLD.md", "docs/templates/AGENT_HLD_TEMPLATE.md"),
+    ("LLD.md", "docs/templates/AGENT_LLD_TEMPLATE.md"),
+]
 
 
 class Issue:
@@ -308,12 +319,71 @@ def validate_agent_skill_independence() -> list[Issue]:
     return issues
 
 
+def extract_h2_headings(content: str) -> list[str]:
+    """Return the ordered list of level-2 (`## `) Markdown heading texts in `content`.
+
+    Fence-aware: a line inside a ``` ... ``` fenced code block is never treated
+    as a heading, even if it happens to start with `## ` (e.g. a documented
+    example heading quoted inside an illustrative snippet).
+    """
+    headings = []
+    inside_fence = False
+    for line in content.splitlines():
+        if FENCE_RE.match(line):
+            inside_fence = not inside_fence
+            continue
+        if inside_fence:
+            continue
+        match = H2_HEADING_RE.match(line)
+        if match:
+            headings.append(match.group(1).strip())
+    return headings
+
+
+def validate_agent_design_doc_headings() -> list[Issue]:
+    """Check that any real `docs/agents/<agent>/HLD.md` / `LLD.md` carries every
+    required section from its canonical template.
+
+    This is the lightweight structural check for Issue #43: it only requires
+    the same `##` headings the matching template defines (derived from the
+    template itself, never a second hardcoded list), so it enforces the
+    documented ownership/contract/failure/open-question structure without an
+    exact-prose test on heading order or wording.
+    """
+    issues: list[Issue] = []
+    docs_agents_dir = REPO_ROOT / "docs/agents"
+    if not docs_agents_dir.is_dir():
+        return issues
+
+    for filename, template_rel in AGENT_DESIGN_DOC_TEMPLATES:
+        template_content, template_error = read_utf8(REPO_ROOT / template_rel)
+        if template_error or template_content is None:
+            continue
+        required_headings = extract_h2_headings(template_content)
+        for doc_path in sorted(docs_agents_dir.glob(f"*/{filename}")):
+            content, decode_error = read_utf8(doc_path)
+            if decode_error or content is None:
+                continue
+            present_headings = set(extract_h2_headings(content))
+            missing = [h for h in required_headings if h not in present_headings]
+            if missing:
+                issues.append(
+                    Issue(
+                        doc_path,
+                        f"missing required section(s) from {template_rel}: "
+                        + ", ".join(missing),
+                    )
+                )
+    return issues
+
+
 def run_validation() -> list[Issue]:
     """Run all repository checks (required files + every Markdown file) and collect Issues."""
     issues: list[Issue] = []
     issues.extend(validate_required_root_files())
     issues.extend(validate_required_agent_files())
     issues.extend(validate_agent_skill_independence())
+    issues.extend(validate_agent_design_doc_headings())
     for md_file in iter_markdown_files(REPO_ROOT):
         issues.extend(validate_markdown_file(md_file))
     return issues

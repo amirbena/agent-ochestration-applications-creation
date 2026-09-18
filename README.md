@@ -96,7 +96,7 @@ The repository-development automation, all mapped in [.github/AUTOMATION.md](.gi
 
 | Workflow | Trigger | Does |
 | --- | --- | --- |
-| [`repository-validation.yml`](.github/workflows/repository-validation.yml) | PR → `main` | Runs [`validate_repository.py`](scripts/validate_repository.py) and [`tests/`](tests/): Markdown integrity, required files, internal-link resolution, the portable-Skill boundary, and machine-checkable Agent contracts. Read-only. |
+| [`repository-validation.yml`](.github/workflows/repository-validation.yml) | PR → `main` | Runs [`validate_repository.py`](scripts/validate_repository.py) and [`tests/`](tests/): Markdown integrity, required files, internal-link resolution, the portable-Skill boundary, required HLD/LLD sections for any real Agent design document, and machine-checkable Agent contracts. Read-only. |
 | [`pr-description-length.yml`](.github/workflows/pr-description-length.yml) | PR → `main` | Enforces a generous ceiling on a PR description's useful content ([`pr_description_length.py`](scripts/pr_description_length.py)). Read-only, no token. |
 | [`sync-issue-labels.yml`](.github/workflows/sync-issue-labels.yml) | `issues` opened / edited | Reconciles an Issue's `type:*` / `area:*` / `priority:*` labels with its Engineering Task Form fields ([`sync_issue_labels.py`](scripts/sync_issue_labels.py)). Mutates labels only. |
 
