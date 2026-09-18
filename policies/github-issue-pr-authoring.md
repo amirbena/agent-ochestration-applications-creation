@@ -48,6 +48,14 @@ Agent ecosystem — a Jira-like work item consumed by a human or a coding agent 
 the repository development workflow. It is **not** a runtime-Agent assignment and **not**
 a normalized requirements contract.
 
+Write it in plain, natural language an engineer with no prior repository context could
+follow: what is wrong, what should be true once the Issue is done, what is
+included/excluded, what must already exist for the work to make sense, and how completion
+is checked. This is not a prompt written for an LLM to execute, and not a second design
+document — the canonical design lives in the linked HLD/LLD/policy (see
+[Information density](#information-density)), and the Issue only explains and scopes the
+work.
+
 A normal Engineering Task Issue body (fields from the Issue Form) is usually:
 
 | Field | Usual size |
@@ -64,8 +72,9 @@ A normal Engineering Task Issue body (fields from the Issue Form) is usually:
 closable deliverables, split it.
 
 When the task genuinely needs more, **link** a research artifact, ADR, parent Issue,
-architecture document, or canonical policy — do not paste those into the Issue. Prefer
-native GitHub sub-issues for parent/child relationships when available.
+architecture document, or canonical policy — do not paste those into the Issue. See
+[Native GitHub relationships](#native-github-relationships) for how `Parent`/`Depends
+on`/`Blocks` map to GitHub's native sub-issue and issue-dependency relationships.
 
 ### Information density
 
@@ -109,6 +118,83 @@ When the research designs an Agent, state the applicable deliverables as
 instead of embedding their structure or rules in the Issue. A follow-up implementation
 Issue is only opened once the LLD's own *Ready for Implementation* section says so, per
 the canonical criteria in that same policy section — do not restate those criteria here.
+
+This canonical-detail boundary matters most for research Issues, since a research Issue's
+natural output — questions, findings, a recommendation — is easy to let grow into a
+second design document inside the Issue body. Issues #12–#22 are the main place this
+could drift: keep the questions, scope, and decision in the Issue, and put the actual
+design in the HLD/LLD the research produces.
+
+### Native GitHub relationships
+
+The `Dependencies` field's `Depends on:` / `Blocks:` / `Parent:` text is the
+**human-readable summary** of a relationship — not the completed state of it. Each has a
+distinct meaning:
+
+| Relationship | Meaning |
+| --- | --- |
+| `Parent` | This work belongs structurally under that work (a child of an epic or a larger task). |
+| `Depends on` / `Blocked by` | This Issue cannot correctly proceed until the referenced Issue is complete. |
+| `Blocks` | Another Issue should not proceed until this one is complete. |
+| `Related` | Useful context for the reader — no execution ordering, no structural relationship. |
+
+GitHub has two **native** relationship primitives: the parent/sub-issue relationship, and
+the issue-dependency relationship (`blocked by` / `blocking`). When a `Parent` or
+`Depends on`/`Blocked by`/`Blocks` reference is genuine, the matching native relationship
+is the **authoritative graph** and must be created **in the same operation** as the prose
+— not left as prose only, and not added later as cleanup. The two primitives are never
+conflated: a structural `Parent` relationship is a sub-issue link, never an
+issue-dependency, and a `Depends on`/`Blocks` ordering is an issue-dependency, never a
+sub-issue link.
+
+`Related` is always prose-only. Never create a native relationship for a `Related`
+reference, and never add a `Parent` or a dependency merely because two Issues share a
+subject or a label — a relationship is created only when it is genuinely structural
+(`Parent`) or genuinely blocking (`Depends on`/`Blocks`).
+
+#### Issue-creation workflow for coding agents
+
+When an agent creates or restructures an Issue's relationships:
+
+1. Inspect repository conventions (this policy, the Issue Form, recent Issues) for shape
+   and terminology.
+2. Search existing Issues for duplicates or an Issue this one should extend instead.
+3. Identify the canonical docs to link (policy, HLD/LLD, template, related Issue) —
+   see [Internal linking](#internal-linking).
+4. Write a concise Issue following [Information density](#information-density).
+5. Create the Issue.
+6. If a genuine parent/child relationship exists, create the matching native sub-issue
+   relationship.
+7. If a genuine dependency exists, create the matching native issue-dependency
+   (`blocked by` / `blocking`) relationship.
+8. Verify the resulting Issue body and relationship state (e.g. via the GitHub UI or
+   `gh api`) — do not assume step 6/7 succeeded silently.
+
+Do not infer a `Parent`, `Depends on`, or `Blocks` relationship from an Issue's title or
+subject alone; only record and create a relationship the author can point to a concrete
+reason for.
+
+### Internal linking
+
+Link directly to the canonical source — the HLD/LLD, policy, template, Agent contract, or
+related Issue — instead of a vague pointer such as "see the architecture document". A
+reader should be able to follow one link to the authoritative source, not search for it.
+The Issue should still make sense on its own without the reader following every link;
+linking replaces reproducing detail, not explaining what the work is.
+
+### Link and reference integrity
+
+[`scripts/validate_repository.py`](../scripts/validate_repository.py) already resolves
+every relative Markdown link in the repository against the filesystem and fails on a
+broken one, which catches the common case of a stale file reference (a renamed or moved
+policy, template, or doc). It does not, and this policy does not add tooling to, validate
+`#fragment` anchor targets or bare `#123`-style Issue-number references — checking that an
+anchor still names an existing heading, or that a referenced Issue number still exists and
+still means what the prose says it means, would require either a live GitHub API call
+during validation or a heading/graph model well beyond a stdlib link check. Given the
+current backlog's size, this is not worth automating now: a broken anchor or a stale
+Issue reference is rare enough to catch in review. Revisit this if repeated stale
+references start passing review unnoticed.
 
 ## Pull Requests
 

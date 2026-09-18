@@ -113,7 +113,10 @@ body:
     id: dependencies
     attributes:
       label: Dependencies
-      description: Backlog structure only. Prefer native GitHub sub-issues for parent/child relationships when available.
+      description: >-
+        Backlog structure only. See "Native GitHub relationships" in
+        policies/github-issue-pr-authoring.md for what Parent/Depends on/Blocks/Related
+        mean and when to create the matching native GitHub relationship.
       value: |
         Depends on: none
         Blocks: none
