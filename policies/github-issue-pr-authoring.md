@@ -116,7 +116,8 @@ not backlog content:
 - a full state machine;
 - a detailed schema or output-field inventory beyond what is necessary to state the
   required contract;
-- a file-by-file implementation plan;
+- a file-by-file implementation plan (see [Information
+  density](#information-density));
 - low-level algorithm design;
 - design rationale already owned by an HLD/LLD;
 - an exact implementation structure that the task is supposed to research;
