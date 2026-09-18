@@ -96,7 +96,53 @@ links the canonical detail rather than reproducing it.
   canonical design document — rather than growing the body to hold it.
 
 This is density, not a cap: a larger Issue is fine when the work genuinely needs it (see
-[Not a character limit](#not-a-character-limit)).
+[Not a character limit](#not-a-character-limit)). When shortening an existing Issue, keep
+every real constraint the work must satisfy — cut the explanation of why, not the
+requirement itself.
+
+### Issue vs. canonical design ownership
+
+An Issue defines the engineering problem, its scope, the decisions the task must
+resolve, and how completion is checked. It is not, and must not become, a hidden
+HLD/LLD.
+
+**Belongs in the Issue:** Problem, Goal, Scope, Non-Goals, the decisions or open
+questions the task must resolve, Acceptance Criteria, Dependencies/relationships,
+Validation, and links to the canonical design.
+
+**Usually does not belong in the Issue** — this is HLD/LLD/canonical-document content,
+not backlog content:
+
+- a full state machine;
+- a detailed schema or output-field inventory beyond what is necessary to state the
+  required contract;
+- a file-by-file implementation plan (see [Information
+  density](#information-density));
+- low-level algorithm design;
+- design rationale already owned by an HLD/LLD;
+- an exact implementation structure that the task is supposed to research;
+- repeated canonical policy text.
+
+If a task's own outcome is that detail (a research Issue producing an HLD/LLD), it
+belongs in the artifact the Issue produces — see [Research Issues](#research-issues) —
+never in the Issue body itself.
+
+### Decision to make vs. decision already made
+
+State plainly whether a behavior is still open or already settled:
+
+- **Open — the task must decide it.** Write `Decide how X should work, subject to
+  constraint Y` (for example: "decide the bootstrap rule for when no previous
+  release/tag exists"). Do not write `Implement X using mechanism A, B, C` unless A/B/C
+  were already decided elsewhere — naming a specific mechanism, schema, taxonomy, or
+  algorithm the task exists to research turns the Issue into the design document the
+  task was supposed to produce, and removes the freedom the task was scoped to have.
+- **Already settled — a canonical decision exists.** State the required invariant
+  concisely and link its owner (a policy, an approved HLD/LLD, an existing repository
+  convention); do not restate the reasoning or re-derive the decision inline.
+
+This applies equally to a Research Issue's open questions and to the underspecified
+parts of an otherwise-concrete Engineering Task Issue.
 
 ### Parent / Epic Issues
 
@@ -106,9 +152,12 @@ dependencies. Detailed requirements live in the child Issues, not the parent.
 ### Research Issues
 
 A research Issue may run a little longer, but the body stays focused on the **questions**,
-the **scope**, the **evidence required**, and the **expected decision / output**. The
-detailed findings belong in the research/analysis artifact the Issue produces, not in the
-Issue body.
+the **scope**, the **evidence required**, and the **expected decision / output**. It names
+the decisions/questions that must be answered and the expected HLD/LLD or decision-record
+output; it does not pre-answer those decisions unless the answer is already canonical
+elsewhere (see [Decision to make vs. decision already
+made](#decision-to-make-vs-decision-already-made)). The detailed findings belong in the
+research/analysis artifact the Issue produces, not in the Issue body.
 
 When the research designs an Agent, state the applicable deliverables as
 `docs/agents/<agent-name>/HLD.md` and `docs/agents/<agent-name>/LLD.md`. Link the
@@ -124,6 +173,18 @@ natural output — questions, findings, a recommendation — is easy to let grow
 second design document inside the Issue body. Issues #12–#22 are the main place this
 could drift: keep the questions, scope, and decision in the Issue, and put the actual
 design in the HLD/LLD the research produces.
+
+### Implementation Issues
+
+An Implementation Issue may be more concrete than a Research Issue: it can require exact
+behavior when that behavior was already decided by an approved design — an HLD/LLD, a
+canonical policy, or a prior Issue's settled conclusion. Link the canonical design and
+state the required behavior as an invariant; do not restate its rationale or reproduce
+the design's content in the Issue body. Where something is still genuinely open even
+inside an otherwise-concrete Implementation Issue, name it as a decision to resolve (see
+[Decision to make vs. decision already
+made](#decision-to-make-vs-decision-already-made)) rather than silently assuming an
+answer.
 
 ### Native GitHub relationships
 

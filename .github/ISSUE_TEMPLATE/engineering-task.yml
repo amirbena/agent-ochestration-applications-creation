@@ -80,7 +80,11 @@ body:
     id: scope
     attributes:
       label: Scope
-      description: The work included. Prefer 3–6 focused bullets. Do not restate the problem or write a file-by-file change plan.
+      description: >-
+        The work included. Prefer 3–6 focused bullets. Do not restate the problem or
+        write a file-by-file change plan. If part of the work is a decision this task
+        must resolve rather than a settled answer, name it as "Decide how X should
+        work, subject to Y" — see policies/github-issue-pr-authoring.md#decision-to-make-vs-decision-already-made.
       placeholder: |
         - ...
         - ...
