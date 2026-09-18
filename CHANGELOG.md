@@ -18,6 +18,18 @@ section, until a Release process is introduced.
 
 ### Changed
 
+- Strengthened `policies/github-issue-pr-authoring.md` so an Issue stays an engineering
+  backlog item, not a hidden HLD/LLD: a new "Issue vs. canonical design ownership"
+  section states what belongs in an Issue versus a canonical design (no full state
+  machines, schema inventories, file-by-file plans, or algorithm design), and a new
+  "Decision to make vs. decision already made" rule requires an unsettled behavior to be
+  written as `Decide how X should work, subject to Y` rather than a specific mechanism,
+  unless that mechanism is already canonical elsewhere. Research Issues and the new
+  Implementation Issues subsection both link this rule instead of restating it.
+  `.github/ISSUE_TEMPLATE/engineering-task.yml`'s Scope field description now points
+  authors at the same rule.
+  ([#50](https://github.com/amirbena/agent-ochestration-applications-creation/issues/50))
+
 - Strengthened the Agent HLD/LLD templates
   (`docs/templates/AGENT_HLD_TEMPLATE.md`, `docs/templates/AGENT_LLD_TEMPLATE.md`) before
   Issues #12–#22 produce real design documents against them: the HLD/LLD boundary is now

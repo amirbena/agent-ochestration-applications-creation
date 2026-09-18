@@ -16,6 +16,7 @@ ISSUE_FORM = ISSUE_TEMPLATE_DIR / "engineering-task.yml"
 BUG_REPORT_FORM = ISSUE_TEMPLATE_DIR / "bug-report.yml"
 FEATURE_REQUEST_FORM = ISSUE_TEMPLATE_DIR / "feature-request.yml"
 ISSUE_CONFIG = ISSUE_TEMPLATE_DIR / "config.yml"
+ISSUE_AUTHORING_POLICY = REPO_ROOT / "policies/github-issue-pr-authoring.md"
 
 # The lightweight-report Issue Forms and the static labels each applies on
 # submission. `bug` is the repository's existing default label; the `type:*`
@@ -200,6 +201,43 @@ def test_issue_form_area_taxonomy_is_stable_and_not_per_agent():
     # Must not mirror the Agent list.
     for agent_name in ["Backend", "Frontend", "DevOps", "Architect", "QA", "Release", "Security", "Team Lead"]:
         assert agent_name not in options, f"Area taxonomy must not name individual Agent '{agent_name}'"
+
+
+def test_issue_authoring_policy_distinguishes_issue_and_canonical_design_ownership():
+    text = ISSUE_AUTHORING_POLICY.read_text(encoding="utf-8")
+    assert "### Issue vs. canonical design ownership" in text
+    assert "Belongs in the Issue" in text
+    assert "does not belong in the Issue" in text
+    for example in [
+        "state machine",
+        "schema",
+        "file-by-file implementation plan",
+        "algorithm design",
+    ]:
+        assert example in text, f"missing non-belongs example: {example}"
+
+
+def test_issue_authoring_policy_states_decision_to_make_vs_already_made_rule():
+    text = ISSUE_AUTHORING_POLICY.read_text(encoding="utf-8")
+    assert "### Decision to make vs. decision already made" in text
+    assert "Decide how X should work, subject to" in text
+    assert "already settled" in text.lower()
+
+
+def test_issue_authoring_policy_distinguishes_research_and_implementation_issues():
+    text = ISSUE_AUTHORING_POLICY.read_text(encoding="utf-8")
+    assert "### Research Issues" in text
+    assert "### Implementation Issues" in text
+    assert text.index("### Research Issues") < text.index("### Implementation Issues")
+    # Each references the shared decision rule rather than restating it.
+    assert text.count("decision-to-make-vs-decision-already-made") >= 2
+
+
+def test_engineering_task_form_scope_field_mentions_decisions_to_resolve():
+    yaml = pytest.importorskip("yaml")
+    data = yaml.safe_load(ISSUE_FORM.read_text(encoding="utf-8"))
+    scope = next(i for i in data["body"] if i.get("id") == "scope")
+    assert "Decide how X should work" in scope["attributes"]["description"]
 
 
 def test_pr_template_sections_present_and_reviewer_oriented():
